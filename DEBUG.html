@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParCure - Debug Console</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #0f172a;
+            color: #f1f5f9;
+            padding: 20px;
+            overflow: auto;
+        }
+        .log {
+            background: #1e2939;
+            padding: 10px;
+            margin: 5px 0;
+            border-left: 3px solid #7c3aed;
+            font-size: 12px;
+        }
+        .error {
+            border-left-color: #ef4444;
+            color: #fca5a5;
+        }
+        .success {
+            border-left-color: #10b981;
+            color: #86efac;
+        }
+        h1 {
+            color: #a78bfa;
+            border-bottom: 2px solid #7c3aed;
+            padding-bottom: 10px;
+        }
+        .status {
+            background: #334155;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>ParCure - Debug Console</h1>
+    <div class="status">
+        <div>
+            <strong>Status:</strong> <span id="status">Initializing...</span>
+        </div>
+        <div>
+            <strong>Firebase:</strong> <span id="firebase-status">Loading...</span>
+        </div>
+        <div>
+            <strong>Auth:</strong> <span id="auth-status">Waiting...</span>
+        </div>
+    </div>
+    <div id="logs"></div>
+
+    <script>
+        const logsContainer = document.getElementById('logs');
+        
+        // Override console methods
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        console.log = function(...args) {
+            originalLog(...args);
+            addLog(args.join(' '), 'log');
+        };
+        
+        console.error = function(...args) {
+            originalError(...args);
+            addLog(args.join(' '), 'error');
+        };
+        
+        function addLog(message, type = 'log') {
+            const logDiv = document.createElement('div');
+            logDiv.className = 'log ' + type;
+            logDiv.textContent = '[' + new Date().toLocaleTimeString() + '] ' + message;
+            logsContainer.appendChild(logDiv);
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+        }
+        
+        // Test Firebase
+        addLog('Checking Firebase SDK...', 'log');
+        
+        if (typeof firebase !== 'undefined') {
+            document.getElementById('firebase-status').textContent = '✓ Loaded';
+            addLog('Firebase SDK is loaded', 'success');
+        } else {
+            document.getElementById('firebase-status').textContent = '✗ Not loaded';
+            addLog('Firebase SDK not found - will load from CDN', 'error');
+        }
+        
+        // Load test
+        setTimeout(() => {
+            addLog('Initial setup complete', 'success');
+            document.getElementById('status').textContent = 'Ready for main app';
+        }, 1000);
+    </script>
+
+    <h2>Next: Open index.html</h2>
+    <p><a href="index.html">Click here to open the main ParCure application</a></p>
+</body>
+</html>

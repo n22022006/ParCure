@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParCure - Patient Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Dashboard Page -->
+    <div id="dashboardPage" class="page active">
+        <!-- Emergency Button (Fixed) -->
+        <button class="emergency-button" id="emergencyBtn" onclick="handleEmergency()" title="Press for help">
+            <span class="emergency-icon">🆘</span>
+            <span class="emergency-text">Call Help</span>
+        </button>
+
+        <div class="dashboard-container elderly-friendly">
+            
+            <!-- Header with ParCure Logo -->
+            <div class="dashboard-header">
+                <h1 class="parcure-logo">ParCure</h1>
+                <p class="header-subtitle">Your Health Companion</p>
+            </div>
+
+            <!-- Greeting Section -->
+            <div class="greeting-section">
+                <div class="greeting-wrapper">
+                    <h2 id="greetingMessage" class="greeting-title">Good Evening</h2>
+                    <p id="greetingName" class="greeting-name">John Doe</p>
+                    <p id="dateTime" class="greeting-time"></p>
+                </div>
+            </div>
+
+            <!-- Today's Health Status Panel -->
+            <div class="health-status-panel">
+                <h2 class="section-title">Today's Health</h2>
+                <div class="health-metrics">
+                    <div class="health-metric">
+                        <div class="metric-label">Status</div>
+                        <div class="status-badge stable">Stable</div>
+                    </div>
+                    <div class="health-metric">
+                        <div class="metric-label">Pain Level</div>
+                        <div class="metric-value">Low</div>
+                    </div>
+                    <div class="health-metric">
+                        <div class="metric-label">Sleep</div>
+                        <div class="metric-value">7.5h</div>
+                    </div>
+                    <div class="health-metric">
+                        <div class="metric-label">Activity</div>
+                        <div class="metric-value">Good</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Saathi AI Message -->
+            <div class="saathi-message">
+                <div class="saathi-icon">💬</div>
+                <div class="saathi-content">
+                    <h3>Saathi Says</h3>
+                    <p id="saathiMessage">Good evening John. You walked less today. Let's do 5 minutes of knee therapy.</p>
+                </div>
+            </div>
+
+            <!-- Today's Tasks -->
+            <div class="daily-tasks">
+                <h2 class="section-title">Today's Tasks</h2>
+                <div class="tasks-list">
+                    <div class="task-item" onclick="toggleTask(this)">
+                        <input type="checkbox" class="task-checkbox">
+                        <span class="task-name">Drink Water</span>
+                        <span class="task-progress">6/8</span>
+                    </div>
+                    <div class="task-item" onclick="toggleTask(this)">
+                        <input type="checkbox" class="task-checkbox">
+                        <span class="task-name">Exercise</span>
+                        <span class="task-progress">✓</span>
+                    </div>
+                    <div class="task-item" onclick="toggleTask(this)">
+                        <input type="checkbox" class="task-checkbox">
+                        <span class="task-name">Take Medicine</span>
+                        <span class="task-progress">2/2</span>
+                    </div>
+                    <div class="task-item" onclick="toggleTask(this)">
+                        <input type="checkbox" class="task-checkbox">
+                        <span class="task-name">Walk 10 Minutes</span>
+                        <span class="task-progress">Pending</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Tracking -->
+            <div class="progress-tracking">
+                <h2 class="section-title">Weekly Progress</h2>
+                <div class="progress-circles">
+                    <div class="progress-circle">
+                        <svg viewBox="0 0 100 100">
+                            <circle class="progress-bg" cx="50" cy="50" r="45"></circle>
+                            <circle class="progress-fill" cx="50" cy="50" r="45" style="stroke-dashoffset: 34;"></circle>
+                        </svg>
+                        <div class="progress-label">
+                            <span class="progress-value">75%</span>
+                            <span class="progress-name">Exercise</span>
+                        </div>
+                    </div>
+                    <div class="progress-circle">
+                        <svg viewBox="0 0 100 100">
+                            <circle class="progress-bg" cx="50" cy="50" r="45"></circle>
+                            <circle class="progress-fill" cx="50" cy="50" r="45" style="stroke-dashoffset: 56;"></circle>
+                        </svg>
+                        <div class="progress-label">
+                            <span class="progress-value">60%</span>
+                            <span class="progress-name">Water Intake</span>
+                        </div>
+                    </div>
+                    <div class="progress-circle">
+                        <svg viewBox="0 0 100 100">
+                            <circle class="progress-bg" cx="50" cy="50" r="45"></circle>
+                            <circle class="progress-fill" cx="50" cy="50" r="45" style="stroke-dashoffset: 23;"></circle>
+                        </svg>
+                        <div class="progress-label">
+                            <span class="progress-value">85%</span>
+                            <span class="progress-name">Recovery</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medication Reminder -->
+            <div class="medication-reminder">
+                <h2 class="section-title">Medication</h2>
+                <div class="med-item">
+                    <div class="med-icon">💊</div>
+                    <div class="med-details">
+                        <div class="med-name">Aspirin 500mg</div>
+                        <div class="med-time">Next: 8:00 PM</div>
+                    </div>
+                    <div class="med-status">Taken</div>
+                </div>
+                <div class="med-item">
+                    <div class="med-icon">💊</div>
+                    <div class="med-details">
+                        <div class="med-name">Lisinopril 10mg</div>
+                        <div class="med-time">Next: 10:00 AM</div>
+                    </div>
+                    <div class="med-status pending">Overdue</div>
+                </div>
+            </div>
+
+            <!-- Action Blocks Grid -->
+            <div class="action-blocks-grid">
+                
+                <!-- Block 1: Exercise -->
+                <div class="action-block" id="exerciseBlock" style="background-image: url('images/p2.jpg');">
+                    <div class="block-overlay"></div>
+                    <div class="block-content">
+                        <h2 class="block-title">Exercise</h2>
+                        <p class="block-description">Start today's guided exercises</p>
+                        <div class="block-arrow">→</div>
+                    </div>
+                </div>
+
+                <!-- Block 2: Diet -->
+                <div class="action-block" id="dietBlock" style="background-image: url('images/p3.jpg');">
+                    <div class="block-overlay"></div>
+                    <div class="block-content">
+                        <h2 class="block-title">Diet</h2>
+                        <p class="block-description">View meals and nutrition plan</p>
+                        <div class="block-arrow">→</div>
+                    </div>
+                </div>
+
+                <!-- Block 3: Saathi (AI Friend) -->
+                <div class="action-block" id="saathiBlock" style="background-image: url('images/p4.jpg');">
+                    <div class="block-overlay"></div>
+                    <div class="block-content">
+                        <h2 class="block-title">Saathi</h2>
+                        <p class="block-description">Talk to your health companion</p>
+                        <div class="block-arrow">→</div>
+                    </div>
+                </div>
+
+                <!-- Block 4: Reports -->
+                <div class="action-block" id="reportsBlock" style="background-image: url('images/p5.jpg');">
+                    <div class="block-overlay"></div>
+                    <div class="block-content">
+                        <h2 class="block-title">Reports</h2>
+                        <p class="block-description">View health and progress reports</p>
+                        <div class="block-arrow">→</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer Spacing -->
+            <div style="height: 30px;"></div>
+
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner hidden">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="errorModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Message</h3>
+            <p id="errorMessage"></p>
+            <button class="btn btn-primary" onclick="closeErrorModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Utility Functions -->
+    <script>
+        function showLoading(show) {
+            const spinner = document.getElementById('loadingSpinner');
+            if (show) {
+                spinner.classList.remove('hidden');
+            } else {
+                spinner.classList.add('hidden');
+            }
+        }
+
+        function showError(message) {
+            const errorModal = document.getElementById('errorModal');
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = message;
+            errorModal.classList.remove('hidden');
+        }
+
+        function closeErrorModal() {
+            document.getElementById('errorModal').classList.add('hidden');
+        }
+
+        // Toggle task completion
+        function toggleTask(element) {
+            const checkbox = element.querySelector('.task-checkbox');
+            checkbox.checked = !checkbox.checked;
+            element.classList.toggle('completed');
+        }
+
+        // Emergency button handler
+        function handleEmergency() {
+            const confirmed = confirm('Call emergency help? This will alert your emergency contacts.');
+            if (confirmed) {
+                console.log('Emergency call initiated');
+                showError('Emergency contacts notified. Help is on the way!');
+            }
+        }
+    </script>
+
+    <!-- Dashboard Scripts -->
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
