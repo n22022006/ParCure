@@ -43,25 +43,32 @@ function updateGreeting() {
     if (greetingMsg) {
         greetingMsg.textContent = getIndiaGreeting();
     }
-    
+
     // Update user name
     const greetingName = document.getElementById('greetingName');
     if (greetingName) {
         greetingName.textContent = sampleUserName;
     }
-    
-    // Update date and time
-    const dateTimeEl = document.getElementById('dateTime');
-    if (dateTimeEl) {
-        const indiaTime = new Date().toLocaleString('en-IN', { 
-            timeZone: 'Asia/Kolkata',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-        dateTimeEl.textContent = indiaTime;
+
+    // Set greeting image according to time of day
+    const greetingImage = document.getElementById('greetingImage');
+    if (greetingImage) {
+        // Get current hour in India timezone
+        const indiaTime = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+        const indiaDate = new Date(indiaTime);
+        const hour = indiaDate.getHours();
+        let imageSrc = '';
+        if (hour >= 5 && hour < 12) {
+            imageSrc = 'images/morning.png'; // morning image
+        } else if (hour >= 12 && hour < 17) {
+            imageSrc = 'images/afternoon.png'; // afternoon image
+        } else if (hour >= 17 && hour < 20) {
+            imageSrc = 'images/evening.png'; // evening image
+        } else {
+            imageSrc = 'images/night.png'; // night image
+        }
+        greetingImage.src = imageSrc;
+        greetingImage.alt = getIndiaGreeting();
     }
 }
 

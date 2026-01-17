@@ -9,11 +9,7 @@
 <body>
     <!-- Dashboard Page -->
     <div id="dashboardPage" class="page active">
-        <!-- Emergency Button (Fixed) -->
-        <button class="emergency-button" id="emergencyBtn" onclick="handleEmergency()" title="Press for help">
-            <span class="emergency-icon">🆘</span>
-            <span class="emergency-text">Call Help</span>
-        </button>
+        
 
         <div class="dashboard-container elderly-friendly">
             
@@ -24,36 +20,16 @@
             </div>
 
             <!-- Greeting Section -->
-            <div class="greeting-section">
-                <div class="greeting-wrapper">
-                    <h2 id="greetingMessage" class="greeting-title">Good Evening</h2>
-                    <p id="greetingName" class="greeting-name">John Doe</p>
-                    <p id="dateTime" class="greeting-time"></p>
+            <div class="greeting-section" style="position: relative; overflow: hidden; padding: 0;">
+                <img id="greetingImage" src="images/u1.jpg" alt="Greeting Image" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; filter: blur(1px) brightness(0.95) drop-shadow(0 0 40px var(--glow-color)); box-shadow: 0 0 80px 20px var(--glow-color);">
+                <div class="greeting-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, rgba(139,92,246,0.25) 0%, rgba(255,255,255,0.08) 100%); z-index: 2;"></div>
+                <div class="greeting-wrapper" style="position: relative; z-index: 3; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; height: 100%; padding: 40px 30px;">
+                    <h2 id="greetingMessage" class="greeting-title" style="text-align: left; margin-left: 0; color: #fff; text-shadow: 0 2px 12px rgba(139,92,246,0.7);">Good Evening</h2>
+                    <p id="greetingName" class="greeting-name" style="text-align: left; margin-left: 0; color: #fff; text-shadow: 0 2px 8px rgba(139,92,246,0.5);">John Doe</p>
                 </div>
             </div>
 
-            <!-- Today's Health Status Panel -->
-            <div class="health-status-panel">
-                <h2 class="section-title">Today's Health</h2>
-                <div class="health-metrics">
-                    <div class="health-metric">
-                        <div class="metric-label">Status</div>
-                        <div class="status-badge stable">Stable</div>
-                    </div>
-                    <div class="health-metric">
-                        <div class="metric-label">Pain Level</div>
-                        <div class="metric-value">Low</div>
-                    </div>
-                    <div class="health-metric">
-                        <div class="metric-label">Sleep</div>
-                        <div class="metric-value">7.5h</div>
-                    </div>
-                    <div class="health-metric">
-                        <div class="metric-label">Activity</div>
-                        <div class="metric-value">Good</div>
-                    </div>
-                </div>
-            </div>
+            <!-- Today's Health Status Panel removed -->
 
             <!-- Saathi AI Message -->
             <div class="saathi-message">
@@ -64,90 +40,7 @@
                 </div>
             </div>
 
-            <!-- Today's Tasks -->
-            <div class="daily-tasks">
-                <h2 class="section-title">Today's Tasks</h2>
-                <div class="tasks-list">
-                    <div class="task-item" onclick="toggleTask(this)">
-                        <input type="checkbox" class="task-checkbox">
-                        <span class="task-name">Drink Water</span>
-                        <span class="task-progress">6/8</span>
-                    </div>
-                    <div class="task-item" onclick="toggleTask(this)">
-                        <input type="checkbox" class="task-checkbox">
-                        <span class="task-name">Exercise</span>
-                        <span class="task-progress">✓</span>
-                    </div>
-                    <div class="task-item" onclick="toggleTask(this)">
-                        <input type="checkbox" class="task-checkbox">
-                        <span class="task-name">Take Medicine</span>
-                        <span class="task-progress">2/2</span>
-                    </div>
-                    <div class="task-item" onclick="toggleTask(this)">
-                        <input type="checkbox" class="task-checkbox">
-                        <span class="task-name">Walk 10 Minutes</span>
-                        <span class="task-progress">Pending</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Progress Tracking -->
-            <div class="progress-tracking">
-                <h2 class="section-title">Weekly Progress</h2>
-                <div class="progress-circles">
-                    <div class="progress-circle">
-                        <svg viewBox="0 0 100 100">
-                            <circle class="progress-bg" cx="50" cy="50" r="45"></circle>
-                            <circle class="progress-fill" cx="50" cy="50" r="45" style="stroke-dashoffset: 34;"></circle>
-                        </svg>
-                        <div class="progress-label">
-                            <span class="progress-value">75%</span>
-                            <span class="progress-name">Exercise</span>
-                        </div>
-                    </div>
-                    <div class="progress-circle">
-                        <svg viewBox="0 0 100 100">
-                            <circle class="progress-bg" cx="50" cy="50" r="45"></circle>
-                            <circle class="progress-fill" cx="50" cy="50" r="45" style="stroke-dashoffset: 56;"></circle>
-                        </svg>
-                        <div class="progress-label">
-                            <span class="progress-value">60%</span>
-                            <span class="progress-name">Water Intake</span>
-                        </div>
-                    </div>
-                    <div class="progress-circle">
-                        <svg viewBox="0 0 100 100">
-                            <circle class="progress-bg" cx="50" cy="50" r="45"></circle>
-                            <circle class="progress-fill" cx="50" cy="50" r="45" style="stroke-dashoffset: 23;"></circle>
-                        </svg>
-                        <div class="progress-label">
-                            <span class="progress-value">85%</span>
-                            <span class="progress-name">Recovery</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Medication Reminder -->
-            <div class="medication-reminder">
-                <h2 class="section-title">Medication</h2>
-                <div class="med-item">
-                    <div class="med-icon">💊</div>
-                    <div class="med-details">
-                        <div class="med-name">Aspirin 500mg</div>
-                        <div class="med-time">Next: 8:00 PM</div>
-                    </div>
-                    <div class="med-status">Taken</div>
-                </div>
-                <div class="med-item">
-                    <div class="med-icon">💊</div>
-                    <div class="med-details">
-                        <div class="med-name">Lisinopril 10mg</div>
-                        <div class="med-time">Next: 10:00 AM</div>
-                    </div>
-                    <div class="med-status pending">Overdue</div>
-                </div>
-            </div>
+            <!-- Today's Tasks, Weekly Progress, and Medication sections removed -->
 
             <!-- Action Blocks Grid -->
             <div class="action-blocks-grid">
