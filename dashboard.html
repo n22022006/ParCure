@@ -19,6 +19,9 @@
                 <p class="header-subtitle">Your Health Companion</p>
             </div>
 
+            <!-- Exercise Section React Root -->
+            <div id="exerciseSectionRoot" style="margin-top: 40px;"></div>
+
             <!-- Greeting Section -->
             <div class="greeting-section" style="position: relative; overflow: hidden; padding: 0;">
                 <img id="greetingImage" src="images/u1.jpg" alt="Greeting Image" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; filter: blur(1px) brightness(0.95) drop-shadow(0 0 40px var(--glow-color)); box-shadow: 0 0 80px 20px var(--glow-color);">
@@ -38,6 +41,19 @@
                     <h3>Saathi Says</h3>
                     <p id="saathiMessage">Good evening John. You walked less today. Let's do 5 minutes of knee therapy.</p>
                 </div>
+            </div>
+
+            <!-- Exercise Section -->
+            <div id="exercise-section" class="exercise-app-container">
+                <div class="exercise-summary-card">
+                    <div class="summary-row"><span>Unlocked Days:</span><span id="unlockedDays">1</span></div>
+                    <div class="summary-row"><span>Completed Days:</span><span id="completedDays">0</span></div>
+                    <div class="summary-row"><span>Overall Rating:</span><span id="overallRating">0%</span></div>
+                    <button class="exercise-reset-btn" id="exerciseResetBtn">Reset Progress</button>
+                </div>
+                <div class="exercise-day-grid" id="exerciseDayGrid"></div>
+                <div id="exerciseDayDetailsPanel" class="exercise-day-details-panel" style="display:none;"></div>
+                <div id="exerciseSessionView" class="exercise-session-view" style="display:none;"></div>
             </div>
 
             <!-- Today's Tasks, Weekly Progress, and Medication sections removed -->
@@ -147,6 +163,17 @@
     </script>
 
     <!-- Dashboard Scripts -->
-    <script src="js/dashboard.js"></script>
+        <script src="js/dashboard.js"></script>
+        <!-- React and Exercise Section Scripts -->
+        <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+        <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+        <!-- You must bundle exerciseApp.jsx to exerciseApp.js using a bundler like Babel/Webpack/Vite -->
+        <script src="exerciseApp.js"></script>
+        <script>
+            // Mount ExerciseApp if available
+            if (window.ExerciseApp) {
+                ReactDOM.createRoot(document.getElementById('exerciseSectionRoot')).render(React.createElement(window.ExerciseApp));
+            }
+        </script>
 </body>
 </html>
