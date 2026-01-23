@@ -17,60 +17,69 @@ const saathiMessages = [
     "Don't forget to take your evening medicines at 8 PM."
 ];
 
-// Get greeting message based on India time
+// Get India Hour correctly (IST)
+function getIndiaHour() {
+  const parts = new Intl.DateTimeFormat("en-IN", {
+    timeZone: "Asia/Kolkata",
+    hour: "2-digit",
+    hour12: false,
+  }).formatToParts(new Date());
+
+  const hourPart = parts.find((p) => p.type === "hour");
+  return parseInt(hourPart.value, 10);
+}
+
+// Greeting message based on India time
 function getIndiaGreeting() {
-    // Get current time in India timezone (IST = UTC+5:30)
-    const indiaTime = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
-    const indiaDate = new Date(indiaTime);
-    const hour = indiaDate.getHours();
-    
-    let greeting = '';
-    if (hour >= 5 && hour < 12) {
-        greeting = 'Good Morning';
-    } else if (hour >= 12 && hour < 17) {
-        greeting = 'Good Afternoon';
-    } else {
-        greeting = 'Good Evening';
-    }
-    
-    return greeting;
+  const hour = getIndiaHour();
+
+  if (hour >= 5 && hour < 12) return "Good Morning";
+  if (hour >= 12 && hour < 17) return "Good Afternoon";
+  if (hour >= 17 && hour < 20) return "Good Evening";
+  return "Good Night";
 }
 
-// Update greeting and date/time
+// Update greeting + name + image
 function updateGreeting() {
-    // Update greeting message
-    const greetingMsg = document.getElementById('greetingMessage');
-    if (greetingMsg) {
-        greetingMsg.textContent = getIndiaGreeting();
+  // Greeting message
+  const greetingMsg = document.getElementById("greetingMessage");
+  if (greetingMsg) {
+    greetingMsg.textContent = getIndiaGreeting();
+  }
+
+  // User name
+  const greetingName = document.getElementById("greetingName");
+  if (greetingName) {
+    greetingName.textContent = sampleUserName;
+  }
+
+  // Greeting image
+  const greetingImage = document.getElementById("greetingImage");
+  if (greetingImage) {
+    const hour = getIndiaHour();
+
+    let imageSrc = "";
+    if (hour >= 5 && hour < 12) {
+      imageSrc = "images/morning.jpeg"; // morning
+    } else if (hour >= 12 && hour < 17) {
+      imageSrc = "images/afternoon2.jpg"; // afternoon
+    } else if (hour >= 17 && hour < 20) {
+      imageSrc = "images/evening2.jpg"; // evening
+    } else {
+      imageSrc = "images/night.jpg"; // night
     }
 
-    // Update user name
-    const greetingName = document.getElementById('greetingName');
-    if (greetingName) {
-        greetingName.textContent = sampleUserName;
-    }
-
-    // Set greeting image according to time of day
-    const greetingImage = document.getElementById('greetingImage');
-    if (greetingImage) {
-        // Get current hour in India timezone
-        const indiaTime = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
-        const indiaDate = new Date(indiaTime);
-        const hour = indiaDate.getHours();
-        let imageSrc = '';
-        if (hour >= 5 && hour < 12) {
-            imageSrc = 'images/morning.png'; // morning image
-        } else if (hour >= 12 && hour < 17) {
-            imageSrc = 'images/afternoon.png'; // afternoon image
-        } else if (hour >= 17 && hour < 20) {
-            imageSrc = 'images/evening.png'; // evening image
-        } else {
-            imageSrc = 'images/night.png'; // night image
-        }
-        greetingImage.src = imageSrc;
-        greetingImage.alt = getIndiaGreeting();
-    }
+    greetingImage.src = imageSrc;
+    greetingImage.alt = getIndiaGreeting();
+  }
 }
+
+// Run on load + update every 1 minute
+document.addEventListener("DOMContentLoaded", () => {
+  updateGreeting();
+  setInterval(updateGreeting, 60 * 1000);
+});
+
 
 // Setup block click handlers
 function setupActionBlocks() {
@@ -102,8 +111,20 @@ function setupActionBlocks() {
 
 // Handle block click
 function handleBlockClick(blockName) {
-    console.log(`${blockName} block clicked`);
-    showError(`${blockName} feature coming soon! 🎉`);
+  console.log(`${blockName} block clicked`);
+  // Navigate to the appropriate page for main features
+  if (blockName === 'Exercise') {
+    window.location.href = 'exercise.html';
+    return;
+  }
+
+  if (blockName === 'Reports') {
+    window.location.href = 'report.html';
+    return;
+  }
+
+  // Fallback for features not yet implemented
+  showError(`${blockName} feature coming soon! 🎉`);
 }
 
 // Update Saathi message

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saathi - Your Personal Health Guide</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/saathi.css">
+</head>
+<body>
+    <!-- Saathi Chatbot Container -->
+    <div class="saathi-container">
+        <!-- Header -->
+        <div class="saathi-header">
+            <div class="saathi-back-btn" onclick="goBack()">
+                <span>←</span>
+            </div>
+            <div class="saathi-title">
+                <h1>Saathi</h1>
+                <p>Your Personal Health Guide</p>
+            </div>
+            <div class="saathi-avatar">
+                <div class="avatar-circle">🤖</div>
+            </div>
+        </div>
+
+        <!-- Chat Messages Container -->
+        <div class="chat-messages" id="chatMessages">
+            <!-- Welcome Message -->
+            <div class="message bot-message">
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <p>Hello! I'm Saathi, your personal health companion. I'm here to help you with health advice, medication reminders, exercise tips, and general wellness guidance. How can I assist you today?</p>
+                    <span class="message-time">just now</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Input Area -->
+        <div class="chat-input-area">
+            <div class="input-wrapper">
+                <input 
+                    type="text" 
+                    id="chatInput" 
+                    class="chat-input" 
+                    placeholder="Ask me anything about your health..."
+                    onkeypress="handleKeyPress(event)"
+                >
+                <button class="send-btn" onclick="sendMessage()">
+                    <span>→</span>
+                </button>
+            </div>
+            <div class="input-suggestions">
+                <button class="suggestion-btn" onclick="sendPredefined('How can I maintain good health?')">Health Tips</button>
+                <button class="suggestion-btn" onclick="sendPredefined('What exercises should I do today?')">Exercise Plan</button>
+                <button class="suggestion-btn" onclick="sendPredefined('When should I take my medication?')">Medication</button>
+            </div>
+        </div>
+
+        <!-- Typing Indicator (hidden by default) -->
+        <div class="typing-indicator hidden" id="typingIndicator">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+
+    <!-- Initialize Firebase -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const firebaseScript = document.createElement('script');
+            firebaseScript.src = 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+            firebaseScript.onload = () => {
+                const configScript = document.createElement('script');
+                configScript.src = 'js/config.js';
+                document.head.appendChild(configScript);
+            };
+            document.head.appendChild(firebaseScript);
+        });
+    </script>
+
+    <script src="js/saathi.js"></script>
+</body>
+</html>

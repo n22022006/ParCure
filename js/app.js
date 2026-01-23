@@ -97,19 +97,19 @@ function createSnowParticles() {
     const particlesContainer = document.querySelector('.particles-container');
     if (!particlesContainer) return;
 
-    // Create 50 snowfall particles
-    for (let i = 0; i < 50; i++) {
+    // Create 150 snowfall particles for dense snowfall
+    for (let i = 0; i < 150; i++) {
         createParticle(particlesContainer);
     }
 
-    // Create new particles continuously
+    // Create new particles continuously - faster generation
     const particleInterval = setInterval(() => {
         if (splashHidden) {
             clearInterval(particleInterval);
             return;
         }
         createParticle(particlesContainer);
-    }, 200);
+    }, 100);
 }
 
 function createParticle(container) {

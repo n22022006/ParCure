@@ -167,35 +167,9 @@ body.app-loaded {
     }
 }
 
-/* Trees */
+/* Trees - HIDDEN */
 .trees-container {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 200px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    padding: 0 40px;
-}
-
-.tree {
-    width: 60px;
-    height: 150px;
-    background: linear-gradient(to right, #6d28d9 0%, #7c3aed 50%, #5b21b6 100%);
-    clip-path: polygon(50% 0%, 100% 38%, 82% 38%, 100% 100%, 0% 100%, 18% 38%, 0% 38%);
-    filter: drop-shadow(0 0 20px rgba(124, 58, 237, 0.8));
-    opacity: 0.9;
-    animation: treeGlow 2.5s ease-in-out infinite;
-}
-
-@keyframes treeGlow {
-    0%, 100% {
-        filter: drop-shadow(0 0 20px rgba(124, 58, 237, 0.8));
-    }
-    50% {
-        filter: drop-shadow(0 0 40px rgba(167, 139, 250, 1));
-    }
+    display: none;
 }
 
 /* ===========================
@@ -239,7 +213,7 @@ body.app-loaded {
 }
 
 /* ===========================
-   LOGIN PAGE
+   LOGIN & SIGNUP THEME (Vibrant Purple)
    =========================== */
 .login-container {
     display: flex;
@@ -247,31 +221,89 @@ body.app-loaded {
     align-items: center;
     min-height: 100vh;
     padding: 20px;
-    background: linear-gradient(135deg, var(--bg-lighter) 0%, var(--bg-light) 100%);
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 60%, var(--secondary) 100%);
 }
 
 .login-card {
     width: 100%;
-    max-width: 500px;
-    padding: 50px 40px;
-    border: 3px solid var(--border);
-    border-radius: 25px;
-    background: var(--bg-light);
-    box-shadow: 0 20px 60px rgba(139, 92, 246, 0.2);
+    max-width: 560px;
+    padding: 44px 36px;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(124,58,237,0.12) 0%, rgba(139,92,246,0.06) 100%);
+    box-shadow: 0 30px 90px rgba(109, 40, 217, 0.22);
+    color: var(--text-light);
 }
 
 .login-card h2 {
-    font-size: 2.5rem;
-    margin-bottom: 15px;
-    color: var(--primary);
-    font-weight: 700;
+    font-size: 2.25rem;
+    margin-bottom: 8px;
+    color: var(--bg-light);
+    font-weight: 800;
+    text-shadow: 0 4px 18px rgba(124,58,237,0.2);
 }
 
 .login-card > p {
-    color: var(--text-muted);
-    margin-bottom: 35px;
-    font-size: 1.1rem;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 22px;
+    font-size: 1rem;
     font-weight: 500;
+}
+
+/* Inputs styled to blend with purple card */
+.login-card .form-group input,
+.login-card .form-group select,
+.login-card .form-group textarea {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--bg-light);
+}
+
+.login-card .form-group input:focus,
+.login-card .form-group select:focus,
+.login-card .form-group textarea:focus {
+    border-color: rgba(255,255,255,0.22);
+    box-shadow: 0 8px 30px rgba(124,58,237,0.16);
+}
+
+.login-card .form-group input::placeholder,
+.login-card .form-group textarea::placeholder {
+    color: rgba(255,255,255,0.7);
+}
+
+.signup-link,
+.login-card .divider,
+.login-card .btn-google {
+    color: rgba(255,255,255,0.92);
+}
+
+.btn-google {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--bg-light);
+}
+
+.btn-google img.google-logo {
+    filter: none;
+}
+
+/* Google button: force white background with black text for contrast */
+.login-card .btn-google {
+    background: #ffffff;
+    color: #111111;
+    font-weight: 800;
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 6px 18px rgba(16,24,40,0.06);
+}
+
+.login-card .btn-google:hover {
+    background: #f8fafc;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(16,24,40,0.08);
+}
+
+.login-card .btn-google img.google-logo {
+    filter: none;
 }
 
 /* ===========================
@@ -324,6 +356,30 @@ body.app-loaded {
     color: var(--text-muted);
 }
 
+/* Override generic form inputs for login/signup card to keep readable light text */
+.login-card .form-group input,
+.login-card .form-group select,
+.login-card .form-group textarea {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #ffffff;
+}
+
+.login-card .form-group input:focus,
+.login-card .form-group select:focus,
+.login-card .form-group textarea:focus {
+    outline: none;
+    border-color: rgba(255,255,255,0.22);
+    box-shadow: 0 8px 30px rgba(124,58,237,0.16);
+    background: rgba(255,255,255,0.04);
+    color: #ffffff;
+}
+
+.login-card .form-group input::placeholder,
+.login-card .form-group textarea::placeholder {
+    color: rgba(255,255,255,0.65);
+}
+
 /* ===========================
    BUTTON STYLES
    =========================== */
@@ -354,21 +410,21 @@ body.app-loaded {
 }
 
 .btn-google {
-    background: white;
-    color: var(--text-dark);
-    font-weight: 700;
+    background: rgba(255,255,255,0.06);
+    color: var(--bg-light);
+    font-weight: 800;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    border: 2px solid var(--border);
-    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.15);
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 10px 30px rgba(109, 40, 217, 0.14);
 }
 
 .btn-google:hover {
-    background: var(--bg-lighter);
+    background: rgba(255,255,255,0.12);
     transform: translateY(-3px);
-    box-shadow: 0 12px 30px rgba(139, 92, 246, 0.25);
+    box-shadow: 0 14px 36px rgba(109, 40, 217, 0.2);
 }
 
 .google-logo {
@@ -448,15 +504,15 @@ body.app-loaded {
 }
 
 .signup-link a {
-    color: var(--primary);
+    color: rgba(255,255,255,0.95);
     text-decoration: none;
     font-weight: 700;
     cursor: pointer;
-    transition: color 0.3s ease;
+    transition: color 0.2s ease;
 }
 
 .signup-link a:hover {
-    color: var(--primary-dark);
+    color: var(--accent);
 }
 
 /* ===========================
@@ -884,12 +940,12 @@ body.app-loaded {
 
     .trees-container {
         padding: 0 20px;
-        height: 100px;
+        height: 130px;
     }
 
     .tree {
-        width: 40px;
-        height: 80px;
+        width: 56px;
+        height: 110px;
     }
 }
 
@@ -912,6 +968,16 @@ body.app-loaded {
     .form-group textarea {
         padding: 10px 12px;
         font-size: 16px;
+    }
+
+    .trees-container {
+        padding: 0 15px;
+        height: 90px;
+    }
+
+    .tree {
+        width: 42px;
+        height: 80px;
     }
 
 }
@@ -944,28 +1010,66 @@ body.app-loaded {
     overflow: hidden;
 }
 
+/* Wrapper: text on left, image on right */
 .greeting-wrapper {
+    display: flex;
+    flex-direction: row;          /* changed from column */
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    height: 100%;
+    padding: 35px 30px;
+}
+
+/* Text block stays on left */
+.greeting-content {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
-    height: 100%;
-    justify-content: flex-start;
-    padding: 40px 30px;
+    flex: 1;
+    min-width: 0;
 }
-/* Glowing effect for greeting image */
+
+/* Image container on right */
+.greeting-image-box {
+    width: 170px;
+    height: 140px;
+    border-radius: 20px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Full image visible (NO ZOOM / NO CROP) */
 #greetingImage {
+    width: 100%;
+    height: 100%;
+    border-radius: 14px;
+
+    /* MAIN FIX */
+    object-fit: contain;
+    object-position: center;
+
+    /* Glow animation */
     animation: glowPulse 2.5s infinite alternate;
 }
 
+/* Glow effect (cleaner + premium) */
 @keyframes glowPulse {
     0% {
-        box-shadow: 0 0 40px 10px var(--glow-color), 0 0 0 0 var(--glow-color);
-        filter: blur(1px) brightness(0.95) drop-shadow(0 0 40px var(--glow-color));
+        filter: brightness(1) drop-shadow(0 0 12px rgba(255, 255, 255, 0.35));
+        transform: scale(1);
     }
     100% {
-        box-shadow: 0 0 80px 30px var(--glow-color), 0 0 20px 10px var(--glow-color);
-        filter: blur(2px) brightness(1.05) drop-shadow(0 0 80px var(--glow-color));
+        filter: brightness(1.05) drop-shadow(0 0 22px rgba(255, 255, 255, 0.65));
+        transform: scale(1.02);
     }
 }
 
@@ -1329,11 +1433,11 @@ body.app-loaded {
    SAATHI MESSAGE
    =========================== */
 .saathi-message {
+    display: none !important;
     background: linear-gradient(135deg, var(--primary-light), var(--accent));
     border-radius: 20px;
     padding: 20px;
     margin-bottom: 25px;
-    display: flex;
     gap: 15px;
     box-shadow: 0 8px 20px rgba(139, 92, 246, 0.1);
     border-left: 5px solid var(--primary);
@@ -1657,5 +1761,83 @@ body.app-loaded {
 
     .med-item {
         padding: 12px;
+    }
+}
+
+/* ===========================
+   FLOATING SAATHI CHAT BUTTON
+   =========================== */
+.floating-saathi-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    border: none;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    z-index: 900;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: saathiBounce 2s ease-in-out infinite;
+}
+
+.floating-saathi-btn:hover {
+    transform: scale(1.15);
+    box-shadow: 0 12px 32px rgba(139, 92, 246, 0.5);
+}
+
+.floating-saathi-btn:active {
+    transform: scale(0.98);
+}
+
+.saathi-bubble-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: saathiPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes saathiBounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+@keyframes saathiPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@media (max-width: 768px) {
+    .floating-saathi-btn {
+        width: 55px;
+        height: 55px;
+        bottom: 20px;
+        right: 20px;
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .floating-saathi-btn {
+        width: 50px;
+        height: 50px;
+        bottom: 16px;
+        right: 16px;
+        font-size: 1.3rem;
     }
 }

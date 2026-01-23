@@ -34,27 +34,7 @@
 
             <!-- Today's Health Status Panel removed -->
 
-            <!-- Saathi AI Message -->
-            <div class="saathi-message">
-                <div class="saathi-icon">💬</div>
-                <div class="saathi-content">
-                    <h3>Saathi Says</h3>
-                    <p id="saathiMessage">Good evening John. You walked less today. Let's do 5 minutes of knee therapy.</p>
-                </div>
-            </div>
-
-            <!-- Exercise Section -->
-            <div id="exercise-section" class="exercise-app-container">
-                <div class="exercise-summary-card">
-                    <div class="summary-row"><span>Unlocked Days:</span><span id="unlockedDays">1</span></div>
-                    <div class="summary-row"><span>Completed Days:</span><span id="completedDays">0</span></div>
-                    <div class="summary-row"><span>Overall Rating:</span><span id="overallRating">0%</span></div>
-                    <button class="exercise-reset-btn" id="exerciseResetBtn">Reset Progress</button>
-                </div>
-                <div class="exercise-day-grid" id="exerciseDayGrid"></div>
-                <div id="exerciseDayDetailsPanel" class="exercise-day-details-panel" style="display:none;"></div>
-                <div id="exerciseSessionView" class="exercise-session-view" style="display:none;"></div>
-            </div>
+           
 
             <!-- Today's Tasks, Weekly Progress, and Medication sections removed -->
 
@@ -152,28 +132,46 @@
             element.classList.toggle('completed');
         }
 
-        // Emergency button handler
-        function handleEmergency() {
-            const confirmed = confirm('Call emergency help? This will alert your emergency contacts.');
-            if (confirmed) {
-                console.log('Emergency call initiated');
-                showError('Emergency contacts notified. Help is on the way!');
-            }
+        
+
+        // Saathi button handler - navigate to chatbot
+        function openSaathi() {
+            window.location.href = 'saathi.html';
         }
+
+        // Initialize action block handlers
+        document.addEventListener('DOMContentLoaded', () => {
+            const saathiBlock = document.getElementById('saathiBlock');
+            if (saathiBlock) {
+                saathiBlock.addEventListener('click', openSaathi);
+            }
+
+            const dietBlock = document.getElementById('dietBlock');
+            if (dietBlock) {
+                dietBlock.addEventListener('click', () => {
+                    window.location.href = 'diet.html';
+                });
+            }
+
+            const exerciseBlock = document.getElementById('exerciseBlock');
+            if (exerciseBlock) {
+                exerciseBlock.addEventListener('click', () => {
+                    window.location.href = 'exercise.html';
+                });
+            }
+
+            const reportsBlock = document.getElementById('reportsBlock');
+            if (reportsBlock) {
+                reportsBlock.addEventListener('click', () => {
+                    window.location.href = 'report.html';
+                });
+            }
+        });
     </script>
 
     <!-- Dashboard Scripts -->
         <script src="js/dashboard.js"></script>
-        <!-- React and Exercise Section Scripts -->
-        <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-        <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-        <!-- You must bundle exerciseApp.jsx to exerciseApp.js using a bundler like Babel/Webpack/Vite -->
-        <script src="exerciseApp.js"></script>
-        <script>
-            // Mount ExerciseApp if available
-            if (window.ExerciseApp) {
-                ReactDOM.createRoot(document.getElementById('exerciseSectionRoot')).render(React.createElement(window.ExerciseApp));
-            }
-        </script>
+      
+        
 </body>
 </html>

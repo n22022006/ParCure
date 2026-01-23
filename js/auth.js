@@ -61,7 +61,7 @@ function setupToggleButtons() {
     console.log('Setting up toggle buttons...');
     
     const signupToggle = document.getElementById('signupToggle');
-    const loginToggle = document.getElementById('loginToggle');
+        const loginToggle = document.getElementById('loginToggle');
     
     console.log('Signup toggle found:', !!signupToggle);
     console.log('Login toggle found:', !!loginToggle);
