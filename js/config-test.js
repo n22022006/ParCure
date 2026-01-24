@@ -34,13 +34,11 @@ const firebase = {
             }
         };
     },
-    firestore: function() {
+    database: function() {
         return {
-            collection: (name) => ({
-                doc: (id) => ({
-                    get: async () => ({ exists: false, data: () => ({}) }),
-                    set: async (data) => console.log('TEST: Saving data', data),
-                })
+            ref: (path) => ({
+                once: async () => ({ exists: () => false, val: () => ({}) }),
+                update: async (data) => console.log('TEST: RTDB update to', path, data)
             })
         };
     },
@@ -51,7 +49,7 @@ const firebase = {
 
 // Mock Firebase services
 const auth = firebase.auth();
-const db = firebase.firestore();
+const rtdb = firebase.database();
 const storage = firebase.storage();
 const provider = { name: 'Google' };
 

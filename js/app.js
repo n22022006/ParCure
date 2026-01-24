@@ -17,13 +17,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fallback: show login immediately if splash doesn't hide
     setTimeout(() => {
         if (!splashHidden) {
-            console.log('Fallback: Forcing app to show');
+            console.log('⚠️ Fallback: Forcing app to show');
+            const splash = document.getElementById('splashScreen');
+            if (splash) splash.classList.add('hidden');
+            
             const appContainer = document.getElementById('appContainer');
             if (appContainer && appContainer.classList.contains('hidden')) {
+                appContainer.classList.remove('hidden');
                 showLogin();
             }
         }
-    }, 10000);
+    }, 4000);  // Reduced from 10000 to 4000ms
 });
 
 // Hide splash and show app after delay
@@ -35,7 +39,7 @@ function hideSplashScreenAfterDelay() {
         const splashScreen = document.getElementById('splashScreen');
         const appContainer = document.getElementById('appContainer');
         
-        console.log('Hiding splash screen');
+        console.log('🎬 Hiding splash screen');
         
         if (splashScreen) {
             splashScreen.classList.add('hidden');
@@ -44,9 +48,9 @@ function hideSplashScreenAfterDelay() {
         if (appContainer) {
             appContainer.classList.remove('hidden');
             document.body.classList.add('app-loaded');
-            console.log('App container shown');
+            console.log('✅ App container shown');
         }
-    }, 8000);
+    }, 3000);  // Reduced from 8000 to 3000ms for faster display
 }
 
 // ===========================

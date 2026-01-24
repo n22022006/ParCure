@@ -218,8 +218,12 @@ async function submitOnboardingForm() {
             }
         }
 
-        // Save to Firestore using merge to preserve any existing data
-        await db.collection('patients').doc(currentUser.uid).set(patientData, { merge: true });
+        // Save to Realtime Database using update to preserve any existing data
+        if (typeof rtdb !== 'undefined') {
+            await rtdb.ref('patients/' + currentUser.uid).update(patientData);
+        } else {
+            console.warn('Realtime Database not available; skipping patient data save');
+        }
 
         console.log('Patient data saved successfully');
         showSuccess('Onboarding completed! Redirecting to dashboard...');

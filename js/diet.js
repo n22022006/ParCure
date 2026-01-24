@@ -124,14 +124,18 @@ function setupEventListeners() {
     }
 }
 
-// Fetch User Condition from Firestore
+// Fetch User Condition from Realtime Database
 async function loadUserCondition() {
     try {
-        const patientDocRef = db.collection('patients').doc(currentUser.uid);
-        const patientDoc = await patientDocRef.get();
+        if (typeof rtdb === 'undefined') {
+            console.warn('Realtime Database not available yet');
+            userCondition = 'General Health Management';
+            return;
+        }
+        const snapshot = await rtdb.ref('patients/' + currentUser.uid).once('value');
 
-        if (patientDoc.exists) {
-            const data = patientDoc.data();
+        if (snapshot.exists()) {
+            const data = snapshot.val() || {};
             // Try different possible field names where condition might be stored
             userCondition = data.medicalCondition || 
                            data.condition || 
@@ -270,7 +274,7 @@ Quick tip:
     });
 
     return meals;
-}
+
 
 // Create Prompt for specific day and meal type
 function createMealPromptForDay(dayName, mealType) {
