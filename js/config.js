@@ -11,9 +11,51 @@ const firebaseConfig = {
     appId: "1:362740241486:web:12e6cf3e5f3ec12c409f1f"
 };
 
-// OpenAI API Configuration
-// Get your API key from OpenAI: https://platform.openai.com/api-keys
-window.OPENAI_API_KEY = "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";
+// OpenRouter API Configuration (development-only)
+// IMPORTANT: Do NOT ship real keys in production frontends.
+// Docs: https://openrouter.ai/docs#client-apis
+// NOTE: Set your OpenRouter key here for MVP/testing.
+// Example format: "sk-or-..."
+window.OPENROUTER_API_KEY = "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";
+// Attempt to populate from URL query or localStorage if not set
+(function ensureOpenRouterKey() {
+    try {
+        if ((window.OPENROUTER_API_KEY || '').trim()) return;
+        const params = new URLSearchParams(window.location.search);
+        const paramKey = (params.get('orKey') || params.get('openrouter') || params.get('key') || '').trim();
+        if (paramKey) {
+            window.OPENROUTER_API_KEY = paramKey;
+            return;
+        }
+        try {
+            const stored = (localStorage.getItem('OPENROUTER_API_KEY') || localStorage.getItem('SAATHI_OPENROUTER_API_KEY') || '').trim();
+            if (stored) window.OPENROUTER_API_KEY = stored;
+        } catch {}
+        window.OPENROUTER_API_KEY = window.OPENROUTER_API_KEY || '';
+    } catch {
+        window.OPENROUTER_API_KEY = window.OPENROUTER_API_KEY || '';
+    }
+})();
+
+// Mirror diet key (OPENAI_API_KEY) to use the same OpenRouter key
+(function ensureOpenAIDietKey() {
+    try {
+        // If OPENAI_API_KEY already set, keep it
+        if ((window.OPENAI_API_KEY || '').trim()) return;
+        // Prefer localStorage diet key
+        try {
+            const storedDiet = (localStorage.getItem('OPENAI_API_KEY') || '').trim();
+            if (storedDiet) { window.OPENAI_API_KEY = storedDiet; return; }
+        } catch {}
+        // Otherwise mirror from OpenRouter key
+        const orKey = (window.OPENROUTER_API_KEY || '').trim();
+        if (orKey) { window.OPENAI_API_KEY = orKey; return; }
+        // As last resort, leave empty
+        window.OPENAI_API_KEY = window.OPENAI_API_KEY || '';
+    } catch {
+        window.OPENAI_API_KEY = window.OPENAI_API_KEY || '';
+    }
+})();
 
 // Initialize Firebase immediately when this script loads (not waiting for DOMContentLoaded)
 console.log(' config.js loading...');
@@ -84,19 +126,9 @@ if (typeof window !== 'undefined' && window.NO_FIREBASE) {
 // Saathi Backend Base URL
 // Ensure frontend knows where to reach the Saathi backend.
 // Priority: URL query param (?saathi=...), then localStorage, then any pre-set global, else default.
-(function ensureSaathiApiBase() {
-    try {
-        const params = new URLSearchParams(window.location.search);
-        const paramBase = params.get('saathi');
-        const storedBase = localStorage.getItem('SAATHI_API_BASE');
-        const defaultBase = 'http://127.0.0.1:3001';
-
-        const finalBase = paramBase || storedBase || window.SAATHI_API_BASE || defaultBase;
-        window.SAATHI_API_BASE = finalBase;
-        console.log(' SAATHI_API_BASE =', window.SAATHI_API_BASE);
-    } catch (e) {
-        window.SAATHI_API_BASE = window.SAATHI_API_BASE || 'http://127.0.0.1:3001';
-    }
+// Disable backend base discovery for frontend-only MVP
+(function disableSaathiBackend() {
+    window.SAATHI_API_BASE = undefined;
 })();
 
 

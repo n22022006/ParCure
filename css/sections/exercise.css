@@ -188,6 +188,10 @@ body{
   transform: translateY(-3px);
   border-color: rgba(109,40,217,0.25);
 }
+.day-card.locked{
+  cursor: not-allowed;
+  opacity: 0.6;
+}
 
 .day-top{
   display:flex;
@@ -215,6 +219,10 @@ body{
 .badge.completed{
   background: rgba(34,197,94,0.16);
   color: #15803d;
+}
+.badge.locked{
+  background: rgba(148,163,184,0.22);
+  color: #475569;
 }
 
 .day-desc{
@@ -293,6 +301,8 @@ body{
   align-items:center;
   gap: 12px;
 }
+.session-card.locked{ opacity: 0.75; }
+.session-card.completed{ opacity: 0.85; }
 .session-left{
   display:flex;
   flex-direction:column;
@@ -318,6 +328,12 @@ body{
 }
 .session-btn:hover{
   background: rgba(109,40,217,0.22);
+}
+.session-btn.disabled,
+.session-btn:disabled{
+  background: #ecebf6;
+  color: #8b8ba7;
+  cursor: not-allowed;
 }
 
 .modal-footer{

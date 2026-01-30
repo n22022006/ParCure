@@ -22,10 +22,9 @@
                 </div>
             </div>
             <nav id="pcDropdown" class="pc-dropdown" aria-label="Profile Menu" role="menu">
-                <div class="pc-menu-item" role="menuitem" id="menuViewProfile">View Profile</div>
-                <div class="pc-menu-item" role="menuitem" id="menuEditAccount">Edit Account</div>
-                <div class="pc-menu-item" role="menuitem" id="menuHelp">Help & Support</div>
-                <div class="pc-menu-item" role="menuitem" id="menuContact">Contact Us</div>
+                <div class="pc-menu-item" role="menuitem" id="menuMyProfile">My Profile</div>
+                <div class="pc-menu-item" role="menuitem" id="menuHelp">Help</div>
+                <div class="pc-menu-item" role="menuitem" id="menuAbout">About</div>
                 <div class="pc-menu-item" role="menuitem" id="menuLogout">Logout</div>
             </nav>
         </header>
@@ -72,6 +71,15 @@
                 </div>
             </section>
         </main>
+
+    <!-- Info Modal (Profile/Help/About) -->
+    <div id="infoModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+        <div class="modal-content">
+            <h3 id="infoModalTitle">Info</h3>
+            <div id="infoModalBody"></div>
+            <button id="infoModalClose" class="btn btn-primary">Close</button>
+        </div>
+    </div>
 
     <!-- Loading Spinner -->
     <div id="loadingSpinner" class="loading-spinner hidden">
@@ -180,27 +188,170 @@
 
         <!-- Dashboard Scripts -->
         <script src="js/dashboard.js"></script>
-        <script src="js/ui-dashboard.js"></script>
         <script type="module">
             import { getFirebase } from './js/firebase-v9.js';
-            import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
+            import { onAuthStateChanged, signOut, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
             import { ref, get } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js';
+            // Dropdown elements
+            const avatarBtn = document.getElementById('pcAvatarBtn');
+            const dropdown = document.getElementById('pcDropdown');
+            const myProfileEl = document.getElementById('menuMyProfile');
+            const helpEl = document.getElementById('menuHelp');
+            const aboutEl = document.getElementById('menuAbout');
+            const logoutEl = document.getElementById('menuLogout');
+            // Info modal elements
+            const infoModal = document.getElementById('infoModal');
+            const infoTitle = document.getElementById('infoModalTitle');
+            const infoBody = document.getElementById('infoModalBody');
+            const infoClose = document.getElementById('infoModalClose');
             const nameEl = document.getElementById('greetingName');
+            const headerNameEl = document.querySelector('.pc-name');
             const localName = localStorage.getItem('pc_user_name');
             if (localName && nameEl) nameEl.textContent = localName;
+            if (localName && headerNameEl) headerNameEl.textContent = localName;
+            let AUTH = null; let RTDB = null; let currentUser = null;
             try {
                 const { auth, rtdb } = getFirebase();
-                onAuthStateChanged(auth, async (user) => {
+                AUTH = auth; RTDB = rtdb;
+                onAuthStateChanged(AUTH, async (user) => {
+                    currentUser = user || null;
                     if (!user) return;
                     try {
-                        const snap = await get(ref(rtdb, 'users/' + user.uid + '/profile'));
+                        const snap = await get(ref(RTDB, 'users/' + user.uid + '/profile'));
                         const profile = snap.exists() ? snap.val() : {};
                         const name = profile.name || profile.fullName || localName || 'Friend';
                         localStorage.setItem('pc_user_name', name);
                         if (nameEl) nameEl.textContent = name;
+                        if (headerNameEl) headerNameEl.textContent = name;
                     } catch (e) { /* ignore */ }
                 });
+                logoutEl?.addEventListener('click', async () => {
+                    try { await signOut(AUTH); } catch (e) { /* ignore */ }
+                    try { localStorage.removeItem('pc_user_name'); } catch (e) { /* ignore */ }
+                    window.location.href = 'index2.html';
+                });
             } catch (e) { /* ignore */ }
+
+            // Responsive dropdown toggle + close handlers
+            function openMenu(){
+                if (!dropdown) return;
+                dropdown.classList.add('open');
+                avatarBtn?.setAttribute('aria-expanded','true');
+                document.addEventListener('click', handleOutside, { capture: true });
+                document.addEventListener('keydown', handleKeys);
+            }
+            function closeMenu(){
+                if (!dropdown) return;
+                dropdown.classList.remove('open');
+                avatarBtn?.setAttribute('aria-expanded','false');
+                document.removeEventListener('click', handleOutside, { capture: true });
+                document.removeEventListener('keydown', handleKeys);
+            }
+            function handleOutside(e){
+                if (!dropdown) return;
+                if (avatarBtn && avatarBtn.contains(e.target)) return;
+                if (!dropdown.contains(e.target)) closeMenu();
+            }
+            function handleKeys(e){ if (e.key === 'Escape') closeMenu(); }
+
+            avatarBtn?.addEventListener('click', () => {
+                const isOpen = dropdown?.classList.contains('open');
+                isOpen ? closeMenu() : openMenu();
+            });
+            // Close menu when any item is clicked
+            myProfileEl?.addEventListener('click', closeMenu);
+            helpEl?.addEventListener('click', closeMenu);
+            aboutEl?.addEventListener('click', closeMenu);
+            logoutEl?.addEventListener('click', closeMenu);
+
+                        // Modal helpers
+                        function showModal(title, html){
+                                if (!infoModal) return;
+                                if (infoTitle) infoTitle.textContent = title;
+                                if (infoBody) infoBody.innerHTML = html;
+                                infoModal.classList.remove('hidden');
+                                infoClose?.focus();
+                        }
+                        function hideModal(){ infoModal?.classList.add('hidden'); }
+
+                        infoClose?.addEventListener('click', hideModal);
+                        infoModal?.addEventListener('click', (e)=>{ if (e.target === infoModal) hideModal(); });
+                        document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') hideModal(); });
+
+                        // Menu content handlers
+                        async function fetchPatient(){
+                                if (!currentUser || !RTDB) return null;
+                                try {
+                                        const snap = await get(ref(RTDB, 'patients/' + currentUser.uid));
+                                        return snap.exists() ? snap.val() : null;
+                                } catch (e) { return null; }
+                        }
+                        function openHelp(){
+                                const emailText = currentUser?.email ? ` (${currentUser.email})` : '';
+                                const html = `
+                                    <div>
+                                        <p>ParCure helps you plan daily exercises, diet, and review progress.</p>
+                                        <ul>
+                                            <li><strong>Exercise:</strong> start guided routines from the Exercise card.</li>
+                                            <li><strong>Diet:</strong> see your daily nutrition plan and tips.</li>
+                                            <li><strong>Reports:</strong> track improvements over time.</li>
+                                        </ul>
+                                        <hr style=\"margin:12px 0; opacity:.2\" />
+                                        <p style=\"margin-bottom:8px\"><strong>Quick actions</strong></p>
+                                        <div style=\"display:flex; gap:10px; flex-wrap:wrap\">
+                                            <a href=\"onboarding-step1.html\" class=\"btn btn-primary\">Edit contact details</a>
+                                            <button id=\"helpResetPassword\" class=\"btn btn-outline\">Send password reset${emailText}</button>
+                                            <a href=\"mailto:support@parcure.example\" class=\"btn btn-outline\">Contact support</a>
+                                        </div>
+                                    </div>`;
+                                showModal('Help', html);
+                                const resetBtn = document.getElementById('helpResetPassword');
+                                resetBtn?.addEventListener('click', async () => {
+                                        if (!AUTH || !currentUser?.email) {
+                                                alert('Please sign in to reset your password.');
+                                                return;
+                                        }
+                                        try {
+                                                await sendPasswordResetEmail(AUTH, currentUser.email);
+                                                alert('Password reset email sent to ' + currentUser.email);
+                                        } catch (e) {
+                                                alert('Could not send reset email. Please try again later.');
+                                        }
+                                });
+                        }
+                        function openAbout(){
+                                const html = `
+                                    <div>
+                                        <p>ParCure is a patient-first wellness app focused on accessibility and simplicity.</p>
+                                        <p>We combine onboarding, daily actions, and reports in a calming violet theme.</p>
+                                        <p>Version: Dashboard UI</p>
+                                    </div>`;
+                                showModal('About', html);
+                        }
+                        async function openMyProfile(){
+                                if (!currentUser){ showModal('My Profile', '<p>Please sign in to view your profile.</p>'); return; }
+                                const data = await fetchPatient();
+                                const personal = data?.personal || {};
+                                const medical = data?.medical || {};
+                                const rows = [
+                                        ['Full Name', personal.fullName || currentUser.displayName || '—'],
+                                        ['Email', personal.email || currentUser.email || '—'],
+                                        ['Phone', personal.phone || '—'],
+                                        ['Age', (personal.age ?? '—')],
+                                        ['Gender', personal.gender || '—'],
+                                        ['Primary Condition', medical.condition || '—'],
+                                        ['Doctor Name', medical.doctorName || '—']
+                                ];
+                                const body = `<div>${rows.map(([k,v])=>`<p><strong>${k}:</strong> ${v}</p>`).join('')}
+                                    <p style=\"margin-top:12px;color:var(--pc-muted)\">To update details, use the onboarding pages.</p>
+                                    <div style=\"margin-top:16px\"><a href=\"onboarding-step1.html\" class=\"btn btn-primary\">Edit in Onboarding</a></div>
+                                </div>`;
+                                showModal('My Profile', body);
+                        }
+
+                        myProfileEl?.addEventListener('click', openMyProfile);
+                        helpEl?.addEventListener('click', openHelp);
+                        aboutEl?.addEventListener('click', openAbout);
         </script>
       
         

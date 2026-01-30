@@ -59,18 +59,18 @@
   </main>
 
   <!-- Session Player Overlay -->
-  <div id="sessionPlayerOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;z-index:1000;">
-    <div style="max-width:900px;margin:40px auto;background:#fff;border-radius:12px;overflow:hidden;">
+  <div id="sessionPlayerOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.75);display:none;z-index:1000;">
+    <div style="max-width:1100px;margin:40px auto;background:#fff;border-radius:12px;overflow:hidden;">
       <div style="padding:16px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
         <div>
-          <h3 id="spTitle" style="margin:0;font-size:20px;">Session</h3>
-          <p id="spSubtitle" style="margin:2px 0 0;color:#666;font-size:13px;">Exercise • Rest Timers</p>
+          <h3 id="spTitle" style="margin:0;font-size:22px;">Session</h3>
+          <p id="spSubtitle" style="margin:2px 0 0;color:#666;font-size:14px;">Exercise • Rest Timers</p>
         </div>
         <button id="spClose" class="btn outline">✕</button>
       </div>
       <div style="padding:16px;display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;">
         <div style="flex:1 1 520px;min-width:300px;">
-          <video id="sessionVideo" style="width:100%;height:auto;border-radius:8px;background:#111;" playsinline muted></video>
+          <video id="sessionVideo" style="width:100%;height:auto;border-radius:12px;background:#111;box-shadow:0 10px 30px rgba(0,0,0,0.25);" playsinline muted></video>
           <div id="spExerciseName" style="margin-top:8px;font-weight:600;">Exercise</div>
         </div>
         <div style="flex:1 1 280px;min-width:240px;">
@@ -85,6 +85,8 @@
             </div>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button id="spSound" class="btn outline">Sound: On</button>
+            <button id="spVideoSound" class="btn outline">Video Sound: Off</button>
             <button id="spPauseResume" class="btn primary">Pause</button>
             <button id="spSkip" class="btn outline">Skip Exercise</button>
             <button id="spExtendRest" class="btn outline">Extend Rest (+30s)</button>
@@ -135,18 +137,18 @@
     // Quick-start video mapping: all exercises point to a public sample video.
     // Replace these URLs with your actual exercise videos when available.
     window.EXERCISE_VIDEO_MAP = {
-      band_external_rotation: 'https://www.w3schools.com/html/mov_bbb.mp4',
-      cross_chest_arms_swing: 'https://www.w3schools.com/html/mov_bbb.mp4',
-      grapevine: 'https://www.w3schools.com/html/mov_bbb.mp4',
-      high_knee_marching: 'https://www.w3schools.com/html/mov_bbb.mp4',
-      inclined_pushups: 'https://www.w3schools.com/html/mov_bbb.mp4',
-      mini_squats: 'https://www.w3schools.com/html/mov_bbb.mp4',
-      obstacle_walk: 'https://www.w3schools.com/html/mov_bbb.mp4',
-      seated_marching: 'https://www.w3schools.com/html/mov_bbb.mp4',
-      single_leg_stand: 'https://www.w3schools.com/html/mov_bbb.mp4',
-      sit_to_stand: 'https://www.w3schools.com/html/mov_bbb.mp4',
-      standing_trunk_rotation: 'https://www.w3schools.com/html/mov_bbb.mp4',
-      wall_ball_dribbling: 'https://www.w3schools.com/html/mov_bbb.mp4'
+      band_external_rotation: 'video/band external rotation.mp4',
+      cross_chest_arms_swing: 'video/crss chest arms swing.mp4',
+      grapevine: '  video/Grapevine.mp4',
+      high_knee_marching: 'video/High-Knee Marching.mp4',
+      inclined_pushups: 'video/inclined pushups.mp4',
+      mini_squats: 'video/mini squats.mp4',
+      obstacle_walk: 'video/obstacle walk.mp4',
+      seated_marching: 'video/seated marching.mp4',
+      single_leg_stand: 'video/single leg stand.mp4',
+      sit_to_stand: 'video/sit to stand.mp4',
+      standing_trunk_rotation: 'video/standing trunk rotation.mp4',
+      wall_ball_dribbling: 'video/wall ball dribbling.mp4'
     };
   </script>
   <script src="js/effectiveness.js"></script>

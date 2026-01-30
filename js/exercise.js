@@ -22,19 +22,69 @@ let pausedEngine = null;
 let toastEl = null;
 let toastTimer = null;
 let audioCtx = null;
+let soundEnabled = true;
+let videoSoundEnabled = false;
+let restBeepTimer = null;
 
-// Storage key
-const STORAGE_KEY = "parcure_exercise_completed_days";
+// Storage keys
+const STORAGE_KEY = "parcure_exercise_completed_days"; // legacy: whole-day completion
+const STORAGE_SESSIONS_KEY = "parcure_exercise_sessions_v1"; // new: per-day session completion
 
-// Get completed days
-function getCompletedDays() {
+// Legacy whole-day completed list (back-compat)
+function getCompletedDaysLegacy() {
   const raw = localStorage.getItem(STORAGE_KEY);
   return raw ? JSON.parse(raw) : [];
 }
-
-// Save completed days
-function setCompletedDays(days) {
+function setCompletedDaysLegacy(days) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(days));
+}
+
+// Session-level progress { [day:number]: boolean[] }
+function getSessionProgress() {
+  const raw = localStorage.getItem(STORAGE_SESSIONS_KEY);
+  let obj = raw ? JSON.parse(raw) : {};
+  // Backfill from legacy if present
+  const legacy = getCompletedDaysLegacy();
+  if (legacy.length && Object.keys(obj).length === 0) {
+    for (let d of legacy) {
+      const count = getSessionsCount(d);
+      obj[d] = Array.from({ length: count }, () => true);
+    }
+  }
+  return obj;
+}
+function setSessionProgress(p) {
+  localStorage.setItem(STORAGE_SESSIONS_KEY, JSON.stringify(p));
+}
+
+function ensureDayArray(progress, day) {
+  const count = getSessionsCount(day);
+  if (!progress[day] || !Array.isArray(progress[day])) progress[day] = Array.from({ length: count }, () => false);
+  // Adjust length if sessions changed
+  if (progress[day].length !== count) {
+    const next = Array.from({ length: count }, (_, i) => Boolean(progress[day][i]));
+    progress[day] = next;
+  }
+}
+
+function isDayCompleted(day) {
+  const progress = getSessionProgress();
+  ensureDayArray(progress, day);
+  return progress[day].every(Boolean);
+}
+
+function getCompletedDaysCount() {
+  let count = 0;
+  for (let d = 1; d <= 30; d++) if (isDayCompleted(d)) count++;
+  return count;
+}
+
+function getUnlockedDayIndex() {
+  // First day that is not fully completed is unlocked; following days locked
+  for (let d = 1; d <= 30; d++) {
+    if (!isDayCompleted(d)) return d;
+  }
+  return 30; // all done, keep last unlocked
 }
 
 // Sessions count logic
@@ -49,11 +99,11 @@ function getDayDescription(day) {
   return "Extra session for faster recovery.";
 }
 
-function buildDayCard(day, completed) {
+function buildDayCard(day, completed, locked) {
   const sessions = getSessionsCount(day);
 
   const card = document.createElement("div");
-  card.className = "day-card";
+  card.className = "day-card" + (locked ? " locked" : "");
 
   const top = document.createElement("div");
   top.className = "day-top";
@@ -67,6 +117,9 @@ function buildDayCard(day, completed) {
   if (completed) {
     badge.className = "badge completed";
     badge.textContent = "Done";
+  } else if (locked) {
+    badge.className = "badge locked";
+    badge.textContent = "Locked";
   } else {
     badge.className = `badge ${sessions === 2 ? "two" : "three"}`;
     badge.textContent = `${sessions} Sessions`;
@@ -82,17 +135,18 @@ function buildDayCard(day, completed) {
   card.appendChild(top);
   card.appendChild(desc);
 
-  card.addEventListener("click", () => openDayModal(day));
+  if (!locked) card.addEventListener("click", () => openDayModal(day));
   return card;
 }
 
 function renderGrid() {
   daysGrid.innerHTML = "";
-  const completedDays = getCompletedDays();
+  const unlocked = getUnlockedDayIndex();
 
   for (let day = 1; day <= 30; day++) {
-    const completed = completedDays.includes(day);
-    const card = buildDayCard(day, completed);
+    const completed = isDayCompleted(day);
+    const locked = day > unlocked && !completed;
+    const card = buildDayCard(day, completed, locked);
     daysGrid.appendChild(card);
   }
 
@@ -100,8 +154,7 @@ function renderGrid() {
 }
 
 function updateProgressUI() {
-  const completedDays = getCompletedDays();
-  const completedCount = completedDays.length;
+  const completedCount = getCompletedDaysCount();
 
   todayText.textContent = `Day ${selectedDay}`;
   progressText.textContent = `${completedCount} / 30`;
@@ -119,9 +172,15 @@ function openDayModal(day) {
 
   sessionList.innerHTML = "";
 
+  const progress = getSessionProgress();
+  ensureDayArray(progress, day);
+
   for (let i = 1; i <= sessions; i++) {
     const sessionCard = document.createElement("div");
-    sessionCard.className = "session-card";
+    const completed = !!progress[day][i - 1];
+    const prevCompleted = i === 1 ? true : !!progress[day][i - 2];
+    const locked = !completed && !prevCompleted;
+    sessionCard.className = "session-card" + (locked ? " locked" : completed ? " completed" : "");
 
     const left = document.createElement("div");
     left.className = "session-left";
@@ -139,7 +198,9 @@ function openDayModal(day) {
 
     const btn = document.createElement("button");
     btn.className = "session-btn";
-    btn.textContent = "Start";
+    if (completed) { btn.textContent = "Completed"; btn.disabled = true; btn.classList.add('disabled'); }
+    else if (locked) { btn.textContent = "Locked"; btn.disabled = true; btn.classList.add('disabled'); }
+    else { btn.textContent = "Start"; }
 
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -155,17 +216,26 @@ function openDayModal(day) {
           day,
           session: i,
           onStateChange: ({state}) => { /* could update UI if present */ },
-          onExerciseStart: ({index, exercise}) => { /* attach video playback here if available */ },
+          onExerciseStart: ({index, exercise}) => { /* video handled in attachEngineEvents */ },
           onExerciseEnd: ()=>{},
           onRestStart: ()=>{},
           onRestEnd: ()=>{},
           onComplete: async ({report}) => {
-            // Mark completed day locally to keep current UI in sync
-            const completedDays = getCompletedDays();
-            if (!completedDays.includes(day)) { completedDays.push(day); setCompletedDays(completedDays); }
+            // Mark this session completed
+            const prog = getSessionProgress();
+            ensureDayArray(prog, day);
+            prog[day][i - 1] = true;
+            setSessionProgress(prog);
+            // If all sessions done, toast
+            if (prog[day].every(Boolean)) {
+              showToast(`Day ${day} completed!`);
+            } else {
+              showToast(`Session ${i} completed`);
+            }
             updateProgressUI();
-            closeModal();
-            alert(`Session ${i} complete!\nEffectiveness: ${report.effectiveness}\nScore: ${report.score}`);
+            // Re-render modal session list and grid to unlock next session/day
+            renderGrid();
+            openDayModal(day);
           }
         });
         currentEngine = eng;
@@ -206,22 +276,28 @@ modalOverlay.addEventListener("click", (e) => {
   if (e.target === modalOverlay) closeModal();
 });
 
-// Mark completed
+// Mark completed (entire day)
 markDoneBtn.addEventListener("click", () => {
-  const completedDays = getCompletedDays();
-
-  if (!completedDays.includes(selectedDay)) {
-    completedDays.push(selectedDay);
-    setCompletedDays(completedDays);
-  }
-
+  const progress = getSessionProgress();
+  ensureDayArray(progress, selectedDay);
+  progress[selectedDay] = progress[selectedDay].map(() => true);
+  setSessionProgress(progress);
   renderGrid();
-  closeModal();
+  openDayModal(selectedDay);
 });
 
 // Start session 1
 startFirstBtn.addEventListener("click", () => {
-  alert(`Starting Day ${selectedDay} - Session 1`);
+  const progress = getSessionProgress();
+  ensureDayArray(progress, selectedDay);
+  const idx = progress[selectedDay].findIndex(v => !v);
+  const sessionToStart = idx === -1 ? 1 : (idx + 1);
+  // simulate clicking that session's button by reopening modal and triggering handler
+  openDayModal(selectedDay);
+  const btns = sessionList.querySelectorAll('.session-btn');
+  if (btns && btns[sessionToStart - 1] && !btns[sessionToStart - 1].disabled) {
+    btns[sessionToStart - 1].click();
+  }
 });
 
 // Go back to dashboard (CONNECTED)
@@ -232,6 +308,7 @@ backBtn.addEventListener("click", () => {
 // Reset progress
 resetBtn.addEventListener("click", () => {
   localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(STORAGE_SESSIONS_KEY);
   renderGrid();
   alert("Exercise progress reset successfully.");
 });
@@ -243,6 +320,8 @@ renderGrid();
 // Session Player Wiring
 // =============================
 document.addEventListener('DOMContentLoaded', ()=>{
+  // Ensure master video base points to existing folder
+  try { window.EXERCISE_VIDEO_BASE = 'video/'; } catch {}
   spEls = {
     overlay: document.getElementById('sessionPlayerOverlay'),
     close: document.getElementById('spClose'),
@@ -253,6 +332,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
     state: document.getElementById('spState'),
     remaining: document.getElementById('spRemaining'),
     pauseResume: document.getElementById('spPauseResume'),
+    sound: document.getElementById('spSound'),
+    videoSound: document.getElementById('spVideoSound'),
     skip: document.getElementById('spSkip'),
     extendRest: document.getElementById('spExtendRest'),
     stop: document.getElementById('spStop')
@@ -277,6 +358,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     resumeBtnEl.addEventListener('click', ()=>{
       if (!pausedEngine) return;
       showSessionPlayer(pausedEngine.day, pausedEngine.session);
+      ensureAudioReady();
       try { pausedEngine.resume(); } catch {}
       if (spEls && spEls.pauseResume) spEls.pauseResume.textContent = 'Pause';
       try { spEls.video.play(); } catch {}
@@ -285,6 +367,33 @@ document.addEventListener('DOMContentLoaded', ()=>{
   }
   toastEl = document.getElementById('spToast');
   try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch {}
+  // Load sound preference
+  try {
+    const saved = localStorage.getItem('parcure_exercise_sound');
+    if (saved !== null) soundEnabled = saved === 'true';
+    const vSaved = localStorage.getItem('parcure_exercise_video_sound');
+    if (vSaved !== null) videoSoundEnabled = vSaved === 'true';
+  } catch {}
+  updateSoundBtn();
+  updateVideoSoundBtn();
+  if (spEls.sound) {
+    spEls.sound.addEventListener('click', ()=>{
+      soundEnabled = !soundEnabled;
+      try { localStorage.setItem('parcure_exercise_sound', String(soundEnabled)); } catch {}
+      if (soundEnabled) ensureAudioReady();
+      updateSoundBtn();
+      showToast(`Sound: ${soundEnabled ? 'On' : 'Off'}`);
+    });
+  }
+  if (spEls.videoSound) {
+    spEls.videoSound.addEventListener('click', ()=>{
+      videoSoundEnabled = !videoSoundEnabled;
+      try { localStorage.setItem('parcure_exercise_video_sound', String(videoSoundEnabled)); } catch {}
+      applyVideoSound();
+      updateVideoSoundBtn();
+      showToast(`Video Sound: ${videoSoundEnabled ? 'On' : 'Off'}`);
+    });
+  }
 });
 
 function showSessionPlayer(day, session){
@@ -293,6 +402,8 @@ function showSessionPlayer(day, session){
   spEls.subtitle.textContent = `6 exercises • 60s each • 30s rest`;
   spEls.overlay.style.display = 'block';
   setRemainingBoxStyle('neutral');
+  ensureAudioReady();
+  applyVideoSound();
 }
 
 function hideSessionPlayer(){ if (spEls) spEls.overlay.style.display = 'none'; }
@@ -331,7 +442,8 @@ function showToast(msg, ms=2000){
 
 function playBeep(type='exercise'){
   try {
-    if (!audioCtx) return;
+    if (!audioCtx || !soundEnabled) return;
+    if (audioCtx.state === 'suspended') return; // will resume on user gesture
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.type = 'sine';
@@ -353,7 +465,7 @@ function wireControls(engine){
     if (engine.isPaused()){ engine.resume(); spEls.pauseResume.textContent = 'Pause'; showToast('Resumed'); if(!spEls.video.paused){} else { try { spEls.video.play(); } catch {} } }
     else { engine.pause(); spEls.pauseResume.textContent = 'Resume'; showToast('Paused'); try { spEls.video.pause(); } catch {} }
   };
-  spEls.skip.onclick = ()=>{ engine?.skipExercise(); showToast('Exercise skipped'); };
+  spEls.skip.onclick = ()=>{ ensureAudioReady(); engine?.skipExercise(); showToast('Exercise skipped'); };
   spEls.extendRest.onclick = ()=>{ engine?.extendRest(); showToast('Rest extended +30s'); };
   spEls.stop.onclick = ()=>{
     if (!engine) return;
@@ -377,9 +489,19 @@ function attachEngineEvents(eng){
   eng.onStateChange = ({state})=>{ if (spEls) spEls.state.textContent = state; };
   eng.onExerciseStart = ({index, exercise, duration})=>{
     if (!spEls || !Master) return;
+    clearRestBeepTimer();
     spEls.exerciseName.textContent = exercise?.name || `Exercise ${index+1}`;
-    const src = Master.getVideoSrc(exercise?.id || '');
-    try { spEls.video.src = src; spEls.video.loop = true; spEls.video.play().catch(()=>{}); } catch {}
+    // Prefer explicit map path, then fallback to Master base
+    const map = (window.EXERCISE_VIDEO_MAP || {});
+    let src = map[exercise?.id] || '';
+    if (src && typeof src === 'string') src = src.trim();
+    if (!src) src = Master.getVideoSrc(exercise?.id || '');
+    try {
+      spEls.video.src = src;
+      spEls.video.loop = true;
+      applyVideoSound();
+      spEls.video.play().catch(()=>{});
+    } catch {}
     playBeep('exercise');
     setRemainingBoxStyle('exercise');
     safeVibrate(80);
@@ -394,7 +516,38 @@ function attachEngineEvents(eng){
     playBeep('rest');
     setRemainingBoxStyle('rest');
     safeVibrate(40);
+    // Repeating beep during rest until it's over
+    clearRestBeepTimer();
+    restBeepTimer = setInterval(()=>{
+      if (!currentEngine || currentEngine.state !== 'REST' || currentEngine.isPaused()) return;
+      playBeep('rest');
+    }, 1000);
     const intv = setInterval(()=>{ if (!currentEngine || currentEngine.state!=='REST'){ clearInterval(intv); return; } spEls.remaining.textContent = formatSec(currentEngine._remainingSec||0); }, 250);
   };
-  eng.onRestEnd = ()=>{};
+  eng.onRestEnd = ()=>{ clearRestBeepTimer(); };
 }
+
+function ensureAudioReady(){
+  try {
+    if (!audioCtx) return;
+    if (audioCtx.state === 'suspended') { audioCtx.resume().catch(()=>{}); }
+  } catch {}
+}
+
+function updateSoundBtn(){
+  if (spEls && spEls.sound) spEls.sound.textContent = `Sound: ${soundEnabled ? 'On' : 'Off'}`;
+}
+
+function updateVideoSoundBtn(){
+  if (spEls && spEls.videoSound) spEls.videoSound.textContent = `Video Sound: ${videoSoundEnabled ? 'On' : 'Off'}`;
+}
+
+function applyVideoSound(){
+  try {
+    if (!spEls || !spEls.video) return;
+    spEls.video.muted = !videoSoundEnabled;
+    spEls.video.volume = videoSoundEnabled ? 0.8 : 0.0;
+  } catch {}
+}
+
+function clearRestBeepTimer(){ if (restBeepTimer){ clearInterval(restBeepTimer); restBeepTimer = null; } }

@@ -10,26 +10,15 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 
 // =============================================================
-// CORS - Explicit development-safe handling
-// -------------------------------------------------------------
-// Why this works:
-// - Sets standard CORS response headers on every request
-//   so browsers see Access-Control-Allow-Origin: *.
-// - Handles preflight (OPTIONS) requests by returning 200
-//   immediately, preventing 426/upgrade or route mismatches.
-// - Registered BEFORE all routes to ensure headers are applied
-//   to health and chat endpoints.
-// NOTE: For production, restrict origins and headers as needed.
+// CORS - Development-safe handling with explicit preflight support
 // =============================================================
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  next();
-});
+const corsOptions = {
+  origin: '*',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // Parse JSON bodies
 app.use(express.json({ limit: '1mb' }));

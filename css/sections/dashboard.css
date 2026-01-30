@@ -67,6 +67,7 @@ html, body {
 .pc-name {
   font-weight: 800;
   color: var(--pc-text);
+  text-transform: uppercase;
 }
 
 /* Avatar + Dropdown */
@@ -93,8 +94,8 @@ html, body {
   right: 16px;
   top: 64px;
   width: 220px;
-  background: var(--pc-surface);
-  border: 1px solid var(--pc-border);
+  background: linear-gradient(135deg, #6d28d9, #5b21b6);
+  border: 1px solid rgba(255,255,255,0.18);
   border-radius: var(--pc-radius);
   box-shadow: var(--pc-shadow);
   backdrop-filter: var(--pc-blur);
@@ -112,11 +113,34 @@ html, body {
   gap: 10px;
   padding: 12px 14px;
   cursor: pointer;
-  font-weight: 700;
-  color: var(--pc-text);
+  font-weight: 800;
+  color: #ffffff;
 }
-.pc-menu-item:hover { background: rgba(109,40,217,0.08); }
-.pc-menu-item:last-child { border-top: 1px dashed var(--pc-border); background: rgba(244, 63, 94, 0.08); }
+.pc-menu-item:hover { background: rgba(255,255,255,0.10); }
+.pc-menu-item:last-child { border-top: 1px dashed rgba(255,255,255,0.25); background: rgba(255,255,255,0.06); }
+
+/* Modal button enhancements scoped to dashboard */
+.modal .btn {
+  border-radius: 12px;
+  font-weight: 800;
+  box-shadow: 0 12px 28px rgba(109,40,217,0.22);
+}
+.modal .btn-primary {
+  background: linear-gradient(135deg, var(--pc-primary), var(--pc-primary-600));
+  border: 0;
+}
+.modal .btn-primary:hover {
+  filter: brightness(1.05);
+  transform: translateY(-2px);
+}
+.modal .btn-outline {
+  border: 2px solid rgba(109,40,217,0.45);
+  color: var(--pc-primary-600);
+  background: rgba(109,40,217,0.06);
+}
+.modal .btn-outline:hover {
+  background: rgba(109,40,217,0.12);
+}
 
 /* Page Container */
 .pc-container {
@@ -150,6 +174,7 @@ html, body {
   font-size: 20px;
   font-weight: 800;
   color: #fff;
+  text-transform: uppercase;
 }
 .pc-hero-image { /* time-based background image */
   position: absolute;

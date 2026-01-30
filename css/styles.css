@@ -665,20 +665,9 @@ body.app-loaded {
     appearance: none;
 }
 
-.pain-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary) 100%);
-    cursor: pointer;
-    box-shadow: 0 0 12px rgba(167, 139, 250, 0.4);
-    transition: all 0.2s ease;
-}
-
-.pain-slider::-webkit-slider-thumb:hover {
-    box-shadow: 0 0 20px rgba(167, 139, 250, 0.6);
+/* Use accent-color for cross-browser minimal styling; remove WebKit-specific selectors to avoid Firefox warnings */
+.pain-slider {
+    accent-color: var(--secondary);
 }
 
 .pain-slider::-moz-range-thumb {

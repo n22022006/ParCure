@@ -126,21 +126,12 @@ html, body {
     background: linear-gradient(135deg, var(--bg-lighter) 0%, var(--bg-light) 100%);
 }
 
-.chat-messages::-webkit-scrollbar {
-    width: 6px;
-}
 
-.chat-messages::-webkit-scrollbar-track {
-    background: transparent;
-}
 
-.chat-messages::-webkit-scrollbar-thumb {
-    background: var(--primary-light);
-    border-radius: 3px;
-}
-
-.chat-messages::-webkit-scrollbar-thumb:hover {
-    background: var(--primary);
+/* Firefox-friendly scrollbar styling */
+.chat-messages {
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-light) transparent;
 }
 
 /* ===========================
@@ -356,13 +347,12 @@ html, body {
     padding-bottom: 8px;
 }
 
-.input-suggestions::-webkit-scrollbar {
-    height: 4px;
-}
 
-.input-suggestions::-webkit-scrollbar-thumb {
-    background: var(--primary-light);
-    border-radius: 2px;
+
+/* Firefox-friendly scrollbar styling */
+.input-suggestions {
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-light) transparent;
 }
 
 .suggestion-btn {
