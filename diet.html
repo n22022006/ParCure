@@ -28,7 +28,7 @@
 
         <!-- Motivational Message -->
         <div class="condition-info-box">
-            <div class="condition-label">Daily Motivation from Dr. Saathi:</div>
+            <div class="condition-label"> Dr. Saathi says :</div>
             <div class="condition-value">You're doing great! Let's create a healthy meal plan for you today.</div>
             <button class="regenerate-btn">🔄 Regenerate Plan</button>
         </div>
@@ -89,7 +89,10 @@
         </div>
     </div>
 
-    <!-- Simple Script - No Firebase -->
+    <!-- Load API key only; skip Firebase init on this page -->
+    <script>window.NO_FIREBASE = true;</script>
+    <script src="js/config.js"></script>
+    <!-- Diet logic -->
     <script src="js/diet-simple.js"></script>
 </body>
 </html>

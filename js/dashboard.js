@@ -5,8 +5,13 @@
 let dashboardData = null;
 let currentUser = null;
 
-// Sample user data
-const sampleUserName = 'John Doe';
+function getStoredUserName() {
+  try {
+    return localStorage.getItem('pc_user_name') || 'Friend';
+  } catch (e) {
+    return 'Friend';
+  }
+}
 
 // AI Saathi messages
 const saathiMessages = [
@@ -50,7 +55,7 @@ function updateGreeting() {
   // User name
   const greetingName = document.getElementById("greetingName");
   if (greetingName) {
-    greetingName.textContent = sampleUserName;
+    greetingName.textContent = getStoredUserName();
   }
 
   // Greeting image
@@ -66,7 +71,7 @@ function updateGreeting() {
     } else if (hour >= 17 && hour < 20) {
       imageSrc = "images/evening2.jpg"; // evening
     } else {
-      imageSrc = "images/night.jpg"; // night
+      imageSrc = "images/night2.jpg"; // night
     }
 
     greetingImage.src = imageSrc;
@@ -122,6 +127,15 @@ function handleBlockClick(blockName) {
     window.location.href = 'report.html';
     return;
   }
+  if (blockName === 'Saathi') {
+    window.location.href = 'saathi.html';
+    return;
+  }
+   if (blockName === 'Diet') {
+    window.location.href = 'diet.html';
+    return;
+  }
+
 
   // Fallback for features not yet implemented
   showError(`${blockName} feature coming soon! 🎉`);

@@ -10,18 +10,21 @@ function prefill(uid) {
   return get(profileRef).then((snap) => {
     if (!snap.exists()) return;
     const profile = snap.val() || {};
-    if (profile.treatmentStartDateTime) {
-      const el = document.getElementById('treatmentStartDateTime');
-      el.value = profile.treatmentStartDateTime;
+    if (profile.treatmentStarted != null) {
+      const val = !!profile.treatmentStarted;
+      const yes = document.getElementById('treatmentYes');
+      const no = document.getElementById('treatmentNo');
+      if (val) yes.checked = true; else no.checked = true;
     }
   });
 }
 
 function save(uid) {
-  const dt = document.getElementById('treatmentStartDateTime').value;
-  if (!dt) { alert('Treatment start date/time is required'); return false; }
+  const checked = document.querySelector('input[name="treatmentStarted"]:checked');
+  if (!checked) { alert('Please select Yes or No'); return false; }
+  const val = checked.value === 'yes';
   const userRef = ref(rtdb, 'users/' + uid);
-  return update(userRef, { 'profile/treatmentStartDateTime': dt });
+  return update(userRef, { 'profile/treatmentStarted': val });
 }
 
 onAuthStateChanged(auth, async (user) => {

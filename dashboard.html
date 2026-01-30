@@ -5,91 +5,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ParCure - Patient Dashboard</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/sections/dashboard.css">
     <!-- Onboarding redirect check (Firebase v9 modular) -->
     <script type="module" src="js/onboarding-check.js"></script>
 </head>
 <body>
-    <!-- Dashboard Page -->
-    <div id="dashboardPage" class="page active">
-        
-
-        <div class="dashboard-container elderly-friendly">
-            
-            <!-- Header with ParCure Logo -->
-            <div class="dashboard-header">
-                <h1 class="parcure-logo">ParCure</h1>
-                <p class="header-subtitle">Your Health Companion</p>
-            </div>
-
-            <!-- Exercise Section React Root -->
-            <div id="exerciseSectionRoot" style="margin-top: 40px;"></div>
-
-            <!-- Greeting Section -->
-            <div class="greeting-section" style="position: relative; overflow: hidden; padding: 0;">
-                <img id="greetingImage" src="images/u1.jpg" alt="Greeting Image" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; filter: blur(1px) brightness(0.95) drop-shadow(0 0 40px var(--glow-color)); box-shadow: 0 0 80px 20px var(--glow-color);">
-                <div class="greeting-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, rgba(139,92,246,0.25) 0%, rgba(255,255,255,0.08) 100%); z-index: 2;"></div>
-                <div class="greeting-wrapper" style="position: relative; z-index: 3; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; height: 100%; padding: 40px 30px;">
-                    <h2 id="greetingMessage" class="greeting-title" style="text-align: left; margin-left: 0; color: #fff; text-shadow: 0 2px 12px rgba(139,92,246,0.7);">Good Evening</h2>
-                    <p id="greetingName" class="greeting-name" style="text-align: left; margin-left: 0; color: #fff; text-shadow: 0 2px 8px rgba(139,92,246,0.5);">John Doe</p>
+        <!-- Dashboard Page -->
+        <header class="pc-header" role="banner">
+            <div class="pc-header-inner">
+                <div class="pc-brand">
+                    <div class="pc-logo" aria-label="ParCure">ParCure</div>
+                    <span class="pc-name"></span>
+                </div>
+                <div class="pc-actions">
+                    <button id="pcAvatarBtn" class="pc-avatar" aria-haspopup="menu" aria-expanded="false" title="User menu">👤</button>
                 </div>
             </div>
+            <nav id="pcDropdown" class="pc-dropdown" aria-label="Profile Menu" role="menu">
+                <div class="pc-menu-item" role="menuitem" id="menuViewProfile">View Profile</div>
+                <div class="pc-menu-item" role="menuitem" id="menuEditAccount">Edit Account</div>
+                <div class="pc-menu-item" role="menuitem" id="menuHelp">Help & Support</div>
+                <div class="pc-menu-item" role="menuitem" id="menuContact">Contact Us</div>
+                <div class="pc-menu-item" role="menuitem" id="menuLogout">Logout</div>
+            </nav>
+        </header>
 
-            <!-- Today's Health Status Panel removed -->
-
-           
-
-            <!-- Today's Tasks, Weekly Progress, and Medication sections removed -->
-
-            <!-- Action Blocks Grid -->
-            <div class="action-blocks-grid">
-                
-                <!-- Block 1: Exercise -->
-                <div class="action-block" id="exerciseBlock" style="background-image: url('images/p2.jpg');">
-                    <div class="block-overlay"></div>
-                    <div class="block-content">
-                        <h2 class="block-title">Exercise</h2>
-                        <p class="block-description">Start today's guided exercises</p>
-                        <div class="block-arrow">→</div>
-                    </div>
+        <main class="pc-container" role="main">
+            <!-- Hero Greeting -->
+            <section class="pc-hero" aria-label="Welcome">
+                <div class="pc-hero-image" aria-hidden="true"></div>
+                <div class="pc-hero-content">
+                    <h2 id="greetingMessage" class="pc-hero-title">Welcome</h2>
+                    <p id="greetingName" class="pc-hero-name">User</p>
                 </div>
+            </section>
 
-                <!-- Block 2: Diet -->
-                <div class="action-block" id="dietBlock" style="background-image: url('images/p3.jpg');">
-                    <div class="block-overlay"></div>
-                    <div class="block-content">
-                        <h2 class="block-title">Diet</h2>
-                        <p class="block-description">View meals and nutrition plan</p>
-                        <div class="block-arrow">→</div>
+            <!-- Action Cards -->
+            <section class="pc-actions-grid" aria-label="Primary Actions">
+                <div class="pc-card card-exercise" id="exerciseBlock">
+                    <div class="pc-card-content">
+                        <h3 class="pc-card-title">Exercise</h3>
+                        <p class="pc-card-desc">Start today's guided exercises</p>
                     </div>
+                    <div class="pc-card-arrow">→</div>
                 </div>
-
-                <!-- Block 3: Saathi (AI Friend) -->
-                <div class="action-block" id="saathiBlock" style="background-image: url('images/p4.jpg');">
-                    <div class="block-overlay"></div>
-                    <div class="block-content">
-                        <h2 class="block-title">Saathi</h2>
-                        <p class="block-description">Talk to your health companion</p>
-                        <div class="block-arrow">→</div>
+                <div class="pc-card card-diet" id="dietBlock">
+                    <div class="pc-card-content">
+                        <h3 class="pc-card-title">Diet</h3>
+                        <p class="pc-card-desc">View meals and nutrition plan</p>
                     </div>
+                    <div class="pc-card-arrow">→</div>
                 </div>
-
-                <!-- Block 4: Reports -->
-                <div class="action-block" id="reportsBlock" style="background-image: url('images/p5.jpg');">
-                    <div class="block-overlay"></div>
-                    <div class="block-content">
-                        <h2 class="block-title">Reports</h2>
-                        <p class="block-description">View health and progress reports</p>
-                        <div class="block-arrow">→</div>
+                <div class="pc-card card-saathi" id="saathiBlock">
+                    <div class="pc-card-content">
+                        <h3 class="pc-card-title">Saathi</h3>
+                        <p class="pc-card-desc">Talk to your health companion</p>
                     </div>
+                    <div class="pc-card-arrow">→</div>
                 </div>
-
-            </div>
-
-            <!-- Footer Spacing -->
-            <div style="height: 30px;"></div>
-
-        </div>
-    </div>
+                <div class="pc-card card-reports" id="reportsBlock">
+                    <div class="pc-card-content">
+                        <h3 class="pc-card-title">Reports</h3>
+                        <p class="pc-card-desc">View health and progress reports</p>
+                    </div>
+                    <div class="pc-card-arrow">→</div>
+                </div>
+            </section>
+        </main>
 
     <!-- Loading Spinner -->
     <div id="loadingSpinner" class="loading-spinner hidden">
@@ -143,6 +125,31 @@
 
         // Initialize action block handlers
         document.addEventListener('DOMContentLoaded', () => {
+            // Time-based greeting background image (precise ranges)
+            const heroImageEl = document.querySelector('.pc-hero-image');
+            if (heroImageEl) {
+                const hour = new Date().getHours(); // 0..23
+                let period = 'morning';
+                if (hour >= 5 && hour < 12) {
+                    period = 'morning';
+                } else if (hour >= 12 && hour < 17) {
+                    period = 'afternoon';
+                } else if (hour >= 17 && hour < 20) {
+                    period = 'evening';
+                } else {
+                    period = 'night';
+                }
+
+                const imagesByPeriod = {
+                    morning: 'images/morning.jpeg',
+                    afternoon: 'images/afternoon2.jpg',
+                    evening: 'images/evening2.jpg',
+                    night: 'images/night2.jpg'
+                };
+                const chosen = imagesByPeriod[period] || imagesByPeriod.morning;
+                heroImageEl.style.backgroundImage = `url('${chosen}')`;
+            }
+
             const saathiBlock = document.getElementById('saathiBlock');
             if (saathiBlock) {
                 saathiBlock.addEventListener('click', openSaathi);
@@ -171,8 +178,30 @@
         });
     </script>
 
-    <!-- Dashboard Scripts -->
+        <!-- Dashboard Scripts -->
         <script src="js/dashboard.js"></script>
+        <script src="js/ui-dashboard.js"></script>
+        <script type="module">
+            import { getFirebase } from './js/firebase-v9.js';
+            import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
+            import { ref, get } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js';
+            const nameEl = document.getElementById('greetingName');
+            const localName = localStorage.getItem('pc_user_name');
+            if (localName && nameEl) nameEl.textContent = localName;
+            try {
+                const { auth, rtdb } = getFirebase();
+                onAuthStateChanged(auth, async (user) => {
+                    if (!user) return;
+                    try {
+                        const snap = await get(ref(rtdb, 'users/' + user.uid + '/profile'));
+                        const profile = snap.exists() ? snap.val() : {};
+                        const name = profile.name || profile.fullName || localName || 'Friend';
+                        localStorage.setItem('pc_user_name', name);
+                        if (nameEl) nameEl.textContent = name;
+                    } catch (e) { /* ignore */ }
+                });
+            } catch (e) { /* ignore */ }
+        </script>
       
         
 </body>

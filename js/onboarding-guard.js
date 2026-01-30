@@ -35,8 +35,8 @@ function firstMissingStep(profile, currentStep) {
   const checks = [
     () => !profile.name || !profile.age, // Step 1
     () => profile.smoking == null || profile.alcohol == null, // Step 2
-     () => profile.exArmyPersonnel == null, // Step 3
-    () => !profile.treatmentStartDateTime // Step 4
+    () => profile.exArmyPersonnel == null, // Step 3
+    () => profile.treatmentStarted == null // Step 4
     // Step 5 is the symptoms submission; not required before visiting 5
   ];
   for (let i = 1; i < currentStep; i++) {
@@ -61,7 +61,7 @@ export function nextIncompleteStep(profile, startAt = 1) {
     () => !profile.name || !profile.age, // Step 1
     () => profile.smoking == null || profile.alcohol == null, // Step 2
     () => profile.exArmyPersonnel == null, // Step 3
-    () => !profile.treatmentStartDateTime // Step 4
+    () => profile.treatmentStarted == null // Step 4
     // Step 5 submission handled separately
   ];
   for (let i = startAt; i <= 4; i++) {

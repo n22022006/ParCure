@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Saathi chatbot loaded');
     loadChatHistory();
     focusChatInput();
+    checkBackendHealth();
 });
 
 // ===========================
@@ -120,6 +121,29 @@ function showTypingIndicator(show) {
     }
 }
 
+// ===========================
+// BACKEND HEALTH CHECK
+// ===========================
+async function checkBackendHealth() {
+    const statusEl = document.getElementById('backendStatus');
+    const API_BASE = (window.SAATHI_API_BASE) || (`http://${location.hostname}:3001`);
+    try {
+        const res = await fetch(`${API_BASE}/api/health`, { method: 'GET' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json().catch(() => ({}));
+        if (statusEl) {
+            statusEl.textContent = `Backend: Connected (${data?.service || 'saathi-backend'})`;
+            statusEl.style.color = '#b2f5ea';
+        }
+    } catch (e) {
+        if (statusEl) {
+            statusEl.textContent = 'Backend: Unreachable. Start server on http://127.0.0.1:3001';
+            statusEl.style.color = '#ffb3b3';
+        }
+        console.warn('Backend health check failed:', e?.message || e);
+    }
+}
+
 /**
  * Scroll chat to bottom
  */
@@ -163,19 +187,12 @@ function focusChatInput() {
  * });
  */
 function sendToGeminiAPI(message) {
-    // Call actual Gemini API with Parkinson's disease expert persona
-    callParkinsonsDoctorAPI(message);
+    // Route through backend Gemini proxy
+    callSaathiBackend(message);
 }
 
-async function callParkinsonsDoctorAPI(message) {
+async function callSaathiBackend(message) {
     try {
-        if (!window.OPENAI_API_KEY) {
-            showTypingIndicator(false);
-            addBotMessage('Error: OpenAI API key not configured. Please add it to js/config.js');
-            isWaitingForResponse = false;
-            return;
-        }
-
         // Build conversation history for context
         let conversationMessages = [];
         
@@ -194,54 +211,38 @@ async function callParkinsonsDoctorAPI(message) {
             content: message
         });
 
-        const response = await fetch(
-            'https://openrouter.ai/api/v1/chat/completions',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + window.OPENAI_API_KEY
-                },
-                body: JSON.stringify({
-                    model: 'gpt-4o-mini',
-                    messages: [
-                        {
-                            role: 'system',
-                            content: 'You are Dr. Saathi - a friendly Parkinson\'s disease specialist who cares about patients like a friend. Always respond in a warm, conversational tone. Format your answer in plain text WITHOUT any markdown symbols (no *, -, #, or bold formatting). Use simple line breaks to separate sections. For every question, provide practical solutions in short, well-organized points that are easy to read. Keep answers concise and actionable. Remember all previous conversations with this patient and refer back to what they\'ve shared before.'
-                        },
-                        ...conversationMessages
-                    ],
-                    temperature: 0.7,
-                    max_tokens: 1024
-                })
-            }
-        ).catch(error => {
-            console.error('Fetch error in Saathi:', error);
-            console.error('API Key prefix:', window.OPENAI_API_KEY ? window.OPENAI_API_KEY.substring(0, 10) : 'NOT SET');
-            throw error;
-        });
+        const API_BASE = (window.SAATHI_API_BASE) || (`http://${location.hostname}:3001`);
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error?.message || 'API request failed');
+        // Enforce POST-only requests to the Saathi chat endpoint
+        // (Prevents accidental GET navigation that leads to 426 errors)
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message,
+                history: conversationMessages
+            })
+        };
+
+        const resp = await fetch(`${API_BASE}/api/saathi/chat`, requestOptions);
+
+        if (!resp.ok) {
+            const err = await resp.json().catch(() => ({}));
+            throw new Error(err?.error || 'Saathi backend request failed');
         }
 
-        const data = await response.json();
-        if (data.choices && data.choices[0]?.message?.content) {
-            const botResponse = data.choices[0].message.content;
-            showTypingIndicator(false);
-            isWaitingForResponse = false;
-            addBotMessage(botResponse);
-        } else {
-            throw new Error('Unexpected API response format');
-        }
+        const data = await resp.json();
+        const botResponse = data?.text || 'Sorry, I could not generate a response.';
+        showTypingIndicator(false);
+        isWaitingForResponse = false;
+        addBotMessage(botResponse);
     } catch (error) {
         console.error('Gemini API error:', error);
         showTypingIndicator(false);
         isWaitingForResponse = false;
-        addBotMessage('Sorry, I encountered an error: ' + error.message + '. Please try again.');
+        addBotMessage('Sorry, I cannot reach the assistant right now. Please ensure the backend is running on http://127.0.0.1:3001 and try again.');
     }
-}    callGeminiAPI();
+}
     
 
 

@@ -1,0 +1,17 @@
+{
+  "name": "parcure-root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Root package to control the Saathi backend server",
+  "scripts": {
+    "install": "npm --prefix server install",
+    "server": "npm --prefix server start",
+    "start": "npm --prefix server start",
+    "frontend": "http-server -p 8080 -c-1 .",
+    "dev": "concurrently -n backend,frontend -c green,magenta \"npm --prefix server start\" \"http-server -p 8080 -c-1 .\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "http-server": "^14.1.1"
+  }
+}

@@ -58,6 +58,54 @@
 
   </main>
 
+  <!-- Session Player Overlay -->
+  <div id="sessionPlayerOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;z-index:1000;">
+    <div style="max-width:900px;margin:40px auto;background:#fff;border-radius:12px;overflow:hidden;">
+      <div style="padding:16px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <h3 id="spTitle" style="margin:0;font-size:20px;">Session</h3>
+          <p id="spSubtitle" style="margin:2px 0 0;color:#666;font-size:13px;">Exercise • Rest Timers</p>
+        </div>
+        <button id="spClose" class="btn outline">✕</button>
+      </div>
+      <div style="padding:16px;display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;">
+        <div style="flex:1 1 520px;min-width:300px;">
+          <video id="sessionVideo" style="width:100%;height:auto;border-radius:8px;background:#111;" playsinline muted></video>
+          <div id="spExerciseName" style="margin-top:8px;font-weight:600;">Exercise</div>
+        </div>
+        <div style="flex:1 1 280px;min-width:240px;">
+          <div style="display:flex;gap:16px;margin-bottom:8px;">
+            <div style="flex:1;background:#f7f7ff;border:1px solid #e6e6ff;border-radius:8px;padding:12px;text-align:center;">
+              <div style="font-size:12px;color:#666;">State</div>
+              <div id="spState" style="font-size:18px;font-weight:700;color:#4c1d95;">IDLE</div>
+            </div>
+            <div style="flex:1;background:#f7f7ff;border:1px solid #e6e6ff;border-radius:8px;padding:12px;text-align:center;">
+              <div style="font-size:12px;color:#666;">Remaining</div>
+              <div id="spRemaining" style="font-size:18px;font-weight:700;color:#4c1d95;">00:00</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button id="spPauseResume" class="btn primary">Pause</button>
+            <button id="spSkip" class="btn outline">Skip Exercise</button>
+            <button id="spExtendRest" class="btn outline">Extend Rest (+30s)</button>
+            <button id="spStop" class="btn danger">Stop Session</button>
+          </div>
+          <div style="margin-top:12px;font-size:12px;color:#666;">Tips: Press S to skip; R to extend rest.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="spToast" style="position:fixed;left:50%;transform:translateX(-50%);bottom:80px;z-index:1100;background:rgba(17,17,17,0.9);color:#fff;padding:10px 14px;border-radius:8px;display:none;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,0.25);">
+    Toast
+  </div>
+
+  <!-- Resume Last Session Button -->
+  <button id="resumeLastSessionBtn" class="btn primary" style="position:fixed;bottom:20px;right:20px;display:none;z-index:900;">
+    Resume Session
+  </button>
+
   <!-- Modal -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
@@ -82,6 +130,28 @@
     </div>
   </div>
 
+  <script src="js/exercise-master.js"></script>
+  <script>
+    // Quick-start video mapping: all exercises point to a public sample video.
+    // Replace these URLs with your actual exercise videos when available.
+    window.EXERCISE_VIDEO_MAP = {
+      band_external_rotation: 'https://www.w3schools.com/html/mov_bbb.mp4',
+      cross_chest_arms_swing: 'https://www.w3schools.com/html/mov_bbb.mp4',
+      grapevine: 'https://www.w3schools.com/html/mov_bbb.mp4',
+      high_knee_marching: 'https://www.w3schools.com/html/mov_bbb.mp4',
+      inclined_pushups: 'https://www.w3schools.com/html/mov_bbb.mp4',
+      mini_squats: 'https://www.w3schools.com/html/mov_bbb.mp4',
+      obstacle_walk: 'https://www.w3schools.com/html/mov_bbb.mp4',
+      seated_marching: 'https://www.w3schools.com/html/mov_bbb.mp4',
+      single_leg_stand: 'https://www.w3schools.com/html/mov_bbb.mp4',
+      sit_to_stand: 'https://www.w3schools.com/html/mov_bbb.mp4',
+      standing_trunk_rotation: 'https://www.w3schools.com/html/mov_bbb.mp4',
+      wall_ball_dribbling: 'https://www.w3schools.com/html/mov_bbb.mp4'
+    };
+  </script>
+  <script src="js/effectiveness.js"></script>
+  <script src="js/report-storage.js"></script>
+  <script src="js/exercise-engine.js"></script>
   <script src="js/exercise.js"></script>
 </body>
 </html>

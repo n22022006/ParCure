@@ -180,6 +180,32 @@ backBtn.addEventListener("click", () => {
 });
 
 // Build report on load
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    // Dynamically load aggregation logic (non-module) and prefer RTDB reports
+    await new Promise((resolve) => {
+      const s = document.createElement('script');
+      s.src = 'js/report-aggregation.js';
+      s.onload = resolve;
+      s.onerror = resolve; // fall back to local storage
+      document.head.appendChild(s);
+    });
+    if (window.ParCureExercise?.Aggregation) {
+      const agg = await window.ParCureExercise.Aggregation.aggregateReport();
+      const completionPercent = agg.completionPct;
+      completionText.textContent = `${completionPercent}%`;
+      progressFill.style.width = `${completionPercent}%`;
+      daysCompletedEl.textContent = agg.daysCompleted;
+      lastDayEl.textContent = agg.lastDay ? `Day ${agg.lastDay}` : '—';
+      const { current, best } = agg.streaks;
+      currentStreakEl.textContent = current;
+      bestStreakEl.textContent = best;
+      drawBarChart(agg.weekly);
+      suggestionBox.textContent = agg.suggestions;
+      return;
+    }
+  } catch (e) {
+    // ignore and fall back
+  }
   buildReport();
 });
