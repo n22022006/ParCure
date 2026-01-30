@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ParCure | Login</title>
+  <link rel="stylesheet" href="css/style2.css"/>
+</head>
+<body>
+
+  <div class="auth-wrapper">
+    <div class="auth-card">
+
+      <div class="brand-area">
+        <h1 class="parcure-logo">ParCure</h1>
+        <p class="brand-subtitle">Your friendly health companion</p>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" id="tabSignIn">Sign In</button>
+        <button class="tab" id="tabSignUp">Sign Up</button>
+      </div>
+
+      <!-- SIGN IN FORM -->
+      <form id="signInForm" class="form active">
+        <label>Email</label>
+        <input type="email" id="signInEmail" placeholder="Enter your email" required>
+
+        <label>Password</label>
+        <input type="password" id="signInPassword" placeholder="Enter your password" required>
+
+        <button type="submit" class="btn primary">Sign In</button>
+
+        <button type="button" class="btn google" id="googleSignInBtn">
+          <img class="google-icon" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"/>
+                    Continue with Google
+        </button>
+      </form>
+
+      <!-- SIGN UP FORM -->
+      <form id="signUpForm" class="form">
+        <label>Full Name</label>
+        <input type="text" id="signUpName" placeholder="Enter your name" required>
+
+        <label>Email</label>
+        <input type="email" id="signUpEmail" placeholder="Enter your email" required>
+
+        <label>Password</label>
+        <input type="password" id="signUpPassword" placeholder="Create password (min 6 chars)" required>
+
+        <button type="submit" class="btn primary">Create Account</button>
+
+        <button type="button" class="btn google" id="googleSignUpBtn">
+          <img class="google-icon" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"/>
+          Sign up with Google
+        </button>
+      </form>
+
+      <p class="message" id="messageBox"></p>
+
+      <div class="footer-note">
+        <p>By continuing, you agree to ParCure’s care-first experience.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Firebase v8 SDK (GLOBAL) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+  <!-- Your Auth Script -->
+  <script src="js/auth2.js"></script>
+</body>
+</html>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParCure - Patient Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/sections/dashboard.css">
+    <!-- Onboarding redirect check (Firebase v9 modular) -->
+    <script type="module" src="js/onboarding-check.js"></script>
+</head>
+<body>
+        <!-- Dashboard Page -->
+        <header class="pc-header" role="banner">
+            <div class="pc-header-inner">
+                <div class="pc-brand">
+                    <div class="pc-logo" aria-label="ParCure">ParCure</div>
+                    <span class="pc-name"></span>
+                </div>
+                <div class="pc-actions">
+                    <button id="pcAvatarBtn" class="pc-avatar" aria-haspopup="menu" aria-expanded="false" title="User menu">👤</button>
+                </div>
+            </div>
+            <nav id="pcDropdown" class="pc-dropdown" aria-label="Profile Menu" role="menu">
+                <div class="pc-menu-item" role="menuitem" id="menuMyProfile">My Profile</div>
+                <div class="pc-menu-item" role="menuitem" id="menuHelp">Help</div>
+                <div class="pc-menu-item" role="menuitem" id="menuAbout">About</div>
+                <div class="pc-menu-item" role="menuitem" id="menuLogout">Logout</div>
+            </nav>
+        </header>
+
+        <main class="pc-container" role="main">
+            <!-- Hero Greeting -->
+            <section class="pc-hero" aria-label="Welcome">
+                <div class="pc-hero-image" aria-hidden="true"></div>
+                <div class="pc-hero-content">
+                    <h2 id="greetingMessage" class="pc-hero-title">Welcome</h2>
+                    <p id="greetingName" class="pc-hero-name">User</p>
+                </div>
+            </section>
+
+            <!-- Action Cards -->
+            <section class="pc-actions-grid" aria-label="Primary Actions">
+                <div class="pc-card card-exercise" id="exerciseBlock">
+                    <div class="pc-card-content">
+                        <h3 class="pc-card-title">Exercise</h3>
+                        <p class="pc-card-desc">Start today's guided exercises</p>
+                    </div>
+                    <div class="pc-card-arrow">→</div>
+                </div>
+                <div class="pc-card card-diet" id="dietBlock">
+                    <div class="pc-card-content">
+                        <h3 class="pc-card-title">Diet</h3>
+                        <p class="pc-card-desc">View meals and nutrition plan</p>
+                    </div>
+                    <div class="pc-card-arrow">→</div>
+                </div>
+                <div class="pc-card card-saathi" id="saathiBlock">
+                    <div class="pc-card-content">
+                        <h3 class="pc-card-title">Saathi</h3>
+                        <p class="pc-card-desc">Talk to your health companion</p>
+                    </div>
+                    <div class="pc-card-arrow">→</div>
+                </div>
+                <div class="pc-card card-reports" id="reportsBlock">
+                    <div class="pc-card-content">
+                        <h3 class="pc-card-title">Reports</h3>
+                        <p class="pc-card-desc">View health and progress reports</p>
+                    </div>
+                    <div class="pc-card-arrow">→</div>
+                </div>
+            </section>
+        </main>
+
+    <!-- Info Modal (Profile/Help/About) -->
+    <div id="infoModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+        <div class="modal-content">
+            <h3 id="infoModalTitle">Info</h3>
+            <div id="infoModalBody"></div>
+            <button id="infoModalClose" class="btn btn-primary">Close</button>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner hidden">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="errorModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Message</h3>
+            <p id="errorMessage"></p>
+            <button class="btn btn-primary" onclick="closeErrorModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Utility Functions -->
+    <script>
+        function showLoading(show) {
+            const spinner = document.getElementById('loadingSpinner');
+            if (show) {
+                spinner.classList.remove('hidden');
+            } else {
+                spinner.classList.add('hidden');
+            }
+        }
+
+        function showError(message) {
+            const errorModal = document.getElementById('errorModal');
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = message;
+            errorModal.classList.remove('hidden');
+        }
+
+        function closeErrorModal() {
+            document.getElementById('errorModal').classList.add('hidden');
+        }
+
+        // Toggle task completion
+        function toggleTask(element) {
+            const checkbox = element.querySelector('.task-checkbox');
+            checkbox.checked = !checkbox.checked;
+            element.classList.toggle('completed');
+        }
+
+        
+
+        // Saathi button handler - navigate to chatbot
+        function openSaathi() {
+            window.location.href = 'saathi.html';
+        }
+
+        // Initialize action block handlers
+        document.addEventListener('DOMContentLoaded', () => {
+            // Time-based greeting background image (precise ranges)
+            const heroImageEl = document.querySelector('.pc-hero-image');
+            if (heroImageEl) {
+                const hour = new Date().getHours(); // 0..23
+                let period = 'morning';
+                if (hour >= 5 && hour < 12) {
+                    period = 'morning';
+                } else if (hour >= 12 && hour < 17) {
+                    period = 'afternoon';
+                } else if (hour >= 17 && hour < 20) {
+                    period = 'evening';
+                } else {
+                    period = 'night';
+                }
+
+                const imagesByPeriod = {
+                    morning: 'images/morning.jpeg',
+                    afternoon: 'images/afternoon2.jpg',
+                    evening: 'images/evening2.jpg',
+                    night: 'images/night2.jpg'
+                };
+                const chosen = imagesByPeriod[period] || imagesByPeriod.morning;
+                heroImageEl.style.backgroundImage = `url('${chosen}')`;
+            }
+
+            const saathiBlock = document.getElementById('saathiBlock');
+            if (saathiBlock) {
+                saathiBlock.addEventListener('click', openSaathi);
+            }
+
+            const dietBlock = document.getElementById('dietBlock');
+            if (dietBlock) {
+                dietBlock.addEventListener('click', () => {
+                    window.location.href = 'diet.html';
+                });
+            }
+
+            const exerciseBlock = document.getElementById('exerciseBlock');
+            if (exerciseBlock) {
+                exerciseBlock.addEventListener('click', () => {
+                    window.location.href = 'exercise.html';
+                });
+            }
+
+            const reportsBlock = document.getElementById('reportsBlock');
+            if (reportsBlock) {
+                reportsBlock.addEventListener('click', () => {
+                    window.location.href = 'report.html';
+                });
+            }
+        });
+    </script>
+
+        <!-- Dashboard Scripts -->
+        <script src="js/dashboard.js"></script>
+        <script type="module">
+            import { getFirebase } from './js/firebase-v9.js';
+            import { onAuthStateChanged, signOut, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
+            import { ref, get } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js';
+            // Dropdown elements
+            const avatarBtn = document.getElementById('pcAvatarBtn');
+            const dropdown = document.getElementById('pcDropdown');
+            const myProfileEl = document.getElementById('menuMyProfile');
+            const helpEl = document.getElementById('menuHelp');
+            const aboutEl = document.getElementById('menuAbout');
+            const logoutEl = document.getElementById('menuLogout');
+            // Info modal elements
+            const infoModal = document.getElementById('infoModal');
+            const infoTitle = document.getElementById('infoModalTitle');
+            const infoBody = document.getElementById('infoModalBody');
+            const infoClose = document.getElementById('infoModalClose');
+            const nameEl = document.getElementById('greetingName');
+            const headerNameEl = document.querySelector('.pc-name');
+            const localName = localStorage.getItem('pc_user_name');
+            if (localName && nameEl) nameEl.textContent = localName;
+            if (localName && headerNameEl) headerNameEl.textContent = localName;
+            let AUTH = null; let RTDB = null; let currentUser = null;
+            try {
+                const { auth, rtdb } = getFirebase();
+                AUTH = auth; RTDB = rtdb;
+                onAuthStateChanged(AUTH, async (user) => {
+                    currentUser = user || null;
+                    if (!user) return;
+                    try {
+                        const snap = await get(ref(RTDB, 'users/' + user.uid + '/profile'));
+                        const profile = snap.exists() ? snap.val() : {};
+                        const name = profile.name || profile.fullName || localName || 'Friend';
+                        localStorage.setItem('pc_user_name', name);
+                        if (nameEl) nameEl.textContent = name;
+                        if (headerNameEl) headerNameEl.textContent = name;
+                    } catch (e) { /* ignore */ }
+                });
+                logoutEl?.addEventListener('click', async () => {
+                    try { await signOut(AUTH); } catch (e) { /* ignore */ }
+                    try { localStorage.removeItem('pc_user_name'); } catch (e) { /* ignore */ }
+                    window.location.href = 'index2.html';
+                });
+            } catch (e) { /* ignore */ }
+
+            // Responsive dropdown toggle + close handlers
+            function openMenu(){
+                if (!dropdown) return;
+                dropdown.classList.add('open');
+                avatarBtn?.setAttribute('aria-expanded','true');
+                document.addEventListener('click', handleOutside, { capture: true });
+                document.addEventListener('keydown', handleKeys);
+            }
+            function closeMenu(){
+                if (!dropdown) return;
+                dropdown.classList.remove('open');
+                avatarBtn?.setAttribute('aria-expanded','false');
+                document.removeEventListener('click', handleOutside, { capture: true });
+                document.removeEventListener('keydown', handleKeys);
+            }
+            function handleOutside(e){
+                if (!dropdown) return;
+                if (avatarBtn && avatarBtn.contains(e.target)) return;
+                if (!dropdown.contains(e.target)) closeMenu();
+            }
+            function handleKeys(e){ if (e.key === 'Escape') closeMenu(); }
+
+            avatarBtn?.addEventListener('click', () => {
+                const isOpen = dropdown?.classList.contains('open');
+                isOpen ? closeMenu() : openMenu();
+            });
+            // Close menu when any item is clicked
+            myProfileEl?.addEventListener('click', closeMenu);
+            helpEl?.addEventListener('click', closeMenu);
+            aboutEl?.addEventListener('click', closeMenu);
+            logoutEl?.addEventListener('click', closeMenu);
+
+                        // Modal helpers
+                        function showModal(title, html){
+                                if (!infoModal) return;
+                                if (infoTitle) infoTitle.textContent = title;
+                                if (infoBody) infoBody.innerHTML = html;
+                                infoModal.classList.remove('hidden');
+                                infoClose?.focus();
+                        }
+                        function hideModal(){ infoModal?.classList.add('hidden'); }
+
+                        infoClose?.addEventListener('click', hideModal);
+                        infoModal?.addEventListener('click', (e)=>{ if (e.target === infoModal) hideModal(); });
+                        document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') hideModal(); });
+
+                        // Menu content handlers
+                        async function fetchPatient(){
+                                if (!currentUser || !RTDB) return null;
+                                try {
+                                        const snap = await get(ref(RTDB, 'patients/' + currentUser.uid));
+                                        return snap.exists() ? snap.val() : null;
+                                } catch (e) { return null; }
+                        }
+                        function openHelp(){
+                                const emailText = currentUser?.email ? ` (${currentUser.email})` : '';
+                                const html = `
+                                    <div>
+                                        <p>ParCure helps you plan daily exercises, diet, and review progress.</p>
+                                        <ul>
+                                            <li><strong>Exercise:</strong> start guided routines from the Exercise card.</li>
+                                            <li><strong>Diet:</strong> see your daily nutrition plan and tips.</li>
+                                            <li><strong>Reports:</strong> track improvements over time.</li>
+                                        </ul>
+                                        <hr style=\"margin:12px 0; opacity:.2\" />
+                                        <p style=\"margin-bottom:8px\"><strong>Quick actions</strong></p>
+                                        <div style=\"display:flex; gap:10px; flex-wrap:wrap\">
+                                            <a href=\"onboarding-step1.html\" class=\"btn btn-primary\">Edit contact details</a>
+                                            <button id=\"helpResetPassword\" class=\"btn btn-outline\">Send password reset${emailText}</button>
+                                            <a href=\"mailto:support@parcure.example\" class=\"btn btn-outline\">Contact support</a>
+                                        </div>
+                                    </div>`;
+                                showModal('Help', html);
+                                const resetBtn = document.getElementById('helpResetPassword');
+                                resetBtn?.addEventListener('click', async () => {
+                                        if (!AUTH || !currentUser?.email) {
+                                                alert('Please sign in to reset your password.');
+                                                return;
+                                        }
+                                        try {
+                                                await sendPasswordResetEmail(AUTH, currentUser.email);
+                                                alert('Password reset email sent to ' + currentUser.email);
+                                        } catch (e) {
+                                                alert('Could not send reset email. Please try again later.');
+                                        }
+                                });
+                        }
+                        function openAbout(){
+                                const html = `
+                                    <div>
+                                        <p>ParCure is a patient-first wellness app focused on accessibility and simplicity.</p>
+                                        <p>We combine onboarding, daily actions, and reports in a calming violet theme.</p>
+                                        <p>Version: Dashboard UI</p>
+                                    </div>`;
+                                showModal('About', html);
+                        }
+                        async function openMyProfile(){
+                                if (!currentUser){ showModal('My Profile', '<p>Please sign in to view your profile.</p>'); return; }
+                                const data = await fetchPatient();
+                                const personal = data?.personal || {};
+                                const medical = data?.medical || {};
+                                const rows = [
+                                        ['Full Name', personal.fullName || currentUser.displayName || '—'],
+                                        ['Email', personal.email || currentUser.email || '—'],
+                                        ['Phone', personal.phone || '—'],
+                                        ['Age', (personal.age ?? '—')],
+                                        ['Gender', personal.gender || '—'],
+                                        ['Primary Condition', medical.condition || '—'],
+                                        ['Doctor Name', medical.doctorName || '—']
+                                ];
+                                const body = `<div>${rows.map(([k,v])=>`<p><strong>${k}:</strong> ${v}</p>`).join('')}
+                                    <p style=\"margin-top:12px;color:var(--pc-muted)\">To update details, use the onboarding pages.</p>
+                                    <div style=\"margin-top:16px\"><a href=\"onboarding-step1.html\" class=\"btn btn-primary\">Edit in Onboarding</a></div>
+                                </div>`;
+                                showModal('My Profile', body);
+                        }
+
+                        myProfileEl?.addEventListener('click', openMyProfile);
+                        helpEl?.addEventListener('click', openHelp);
+                        aboutEl?.addEventListener('click', openAbout);
+        </script>
+      
+        
+</body>
+</html>

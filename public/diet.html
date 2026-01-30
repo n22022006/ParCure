@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diet Plan - ParCure</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/diet.css">
+</head>
+<body>
+    <!-- Loading Spinner -->
+    <div class="diet-loading-spinner hidden">
+        <div class="spinner"></div>
+        <p>Generating your personalized diet plan...</p>
+    </div>
+
+    <!-- Diet Page -->
+    <div class="diet-container">
+        <!-- Header -->
+        <div class="diet-header">
+            <button class="diet-back-btn">←</button>
+            <h1>Personalized Diet Plan</h1>
+            <div class="diet-toggle-buttons">
+                <button class="toggle-btn active" id="dailyToggleBtn">Daily</button>
+                <button class="toggle-btn" id="weeklyToggleBtn">Weekly</button>
+            </div>
+        </div>
+
+        <!-- Motivational Message -->
+        <div class="condition-info-box">
+            <div class="condition-label"> Dr. Saathi says :</div>
+            <div class="condition-value">You're doing great! Let's create a healthy meal plan for you today.</div>
+            <button class="regenerate-btn">🔄 Regenerate Plan</button>
+        </div>
+
+        <!-- Daily View -->
+        <div id="dailyView" class="view-container active">
+            <div class="date-selector">
+                <button class="date-nav-btn" id="prevDayBtn">← Previous</button>
+                <div class="current-date">Today</div>
+                <button class="date-nav-btn" id="nextDayBtn">Next →</button>
+            </div>
+
+            <!-- Daily Meals -->
+            <div class="daily-meals-container" id="dailyMeals">
+                <!-- Breakfast -->
+                <div class="meal-card">
+                    <div class="meal-header">
+                        <h3 class="meal-name">🌅 Breakfast</h3>
+                        <span class="meal-time">7:00 AM - 9:00 AM</span>
+                    </div>
+                    <div class="meal-content" id="breakfastContent">Loading...</div>
+                </div>
+
+                <!-- Lunch -->
+                <div class="meal-card">
+                    <div class="meal-header">
+                        <h3 class="meal-name">🌤️ Lunch</h3>
+                        <span class="meal-time">12:00 PM - 2:00 PM</span>
+                    </div>
+                    <div class="meal-content" id="lunchContent">Loading...</div>
+                </div>
+
+                <!-- Dinner -->
+                <div class="meal-card">
+                    <div class="meal-header">
+                        <h3 class="meal-name">🌙 Dinner</h3>
+                        <span class="meal-time">6:00 PM - 8:00 PM</span>
+                    </div>
+                    <div class="meal-content" id="dinnerContent">Loading...</div>
+                </div>
+
+                <!-- Snacks -->
+                <div class="meal-card">
+                    <div class="meal-header">
+                        <h3 class="meal-name">🍎 Snacks</h3>
+                        <span class="meal-time">Throughout the day</span>
+                    </div>
+                    <div class="meal-content" id="snacksContent">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weekly View -->
+        <div id="weeklyView" class="view-container">
+            <div class="weekly-meals-container" id="weeklyMeals">
+                <!-- Weekly meals will be generated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Load API key only; skip Firebase init on this page -->
+    <script>window.NO_FIREBASE = true;</script>
+    <script src="js/config.js"></script>
+    <!-- Diet logic -->
+    <script src="js/diet-simple.js"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ParCure | Onboarding Step 4</title>
+  <link rel="stylesheet" href="css/style2.css"/>
+  <style>
+    .ob-wrapper { max-width: 520px; margin: 32px auto; }
+    .progress { text-align:center; font-weight:800; color:#555; margin-bottom:10px; }
+    .actions { display:flex; gap:10px; margin-top:12px; }
+    .actions .btn { flex:1; }
+  </style>
+</head>
+<body class="onboarding">
+  <header class="app-header">
+    <div class="app-header-inner">
+      <div class="app-logo">ParCure</div>
+    </div>
+  </header>
+  <div class="auth-wrapper ob-wrapper">
+    <div class="auth-card">
+      <div class="brand-area">
+        <h1 class="brand-title">Treatment Status</h1>
+        <p class="brand-subtitle">Step 4 of 5</p>
+      </div>
+
+      <div class="steps" aria-label="Onboarding Progress">
+        <div class="step done">
+          <div class="node">1</div>
+          <span class="label">Profile</span>
+        </div>
+        <div class="step done">
+          <div class="node">2</div>
+          <span class="label">Lifestyle</span>
+        </div>
+        <div class="step done">
+          <div class="node">3</div>
+          <span class="label">Background</span>
+        </div>
+        <div class="step current">
+          <div class="node">4</div>
+          <span class="label">Treatment</span>
+        </div>
+        <div class="step">
+          <div class="node">5</div>
+          <span class="label">Symptoms</span>
+        </div>
+      </div>
+
+      <div class="progress">Step 4 of 5</div>
+
+      <form id="step4Form" class="form active">
+        <label>Treatment Started</label>
+        <div class="segmented">
+          <input type="radio" name="treatmentStarted" id="treatmentYes" value="yes">
+          <label for="treatmentYes">Yes</label>
+          <input type="radio" name="treatmentStarted" id="treatmentNo" value="no">
+          <label for="treatmentNo">No</label>
+        </div>
+
+        <div class="actions">
+          <a class="btn" href="onboarding-step3.html">Back</a>
+          <button class="btn primary" type="submit">Next</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="js/onboarding-step4.js"></script>
+</body>
+</html>

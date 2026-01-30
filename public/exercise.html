@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ParCure | Move Well</title>
+  <link rel="stylesheet" href="css/sections/exercise.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">ParCure</div>
+      <div class="subtitle">Move Well • 30 Day Plan</div>
+    </div>
+
+    <div class="right">
+      <button class="btn outline" id="backBtn">← Dashboard</button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section class="hero">
+      <div class="hero-text">
+        <h1>Move Well</h1>
+        <p>Tap any day to view sessions. Follow a safe and comfortable pace.</p>
+
+        <div class="legend">
+          <span class="pill p2">2 Sessions</span>
+          <span class="pill p3">3 Sessions</span>
+          <span class="pill done">Completed</span>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="stat">
+          <div class="stat-title">Selected</div>
+          <div class="stat-value" id="todayText">Day 1</div>
+        </div>
+        <div class="stat">
+          <div class="stat-title">Progress</div>
+          <div class="stat-value" id="progressText">0 / 30</div>
+        </div>
+
+        <div class="progressbar">
+          <div class="progressfill" id="progressFill"></div>
+        </div>
+
+        <button class="btn danger" id="resetBtn">Reset Progress</button>
+      </div>
+    </section>
+
+    <section class="grid-section">
+      <h2 class="section-title">Your Exercise Days</h2>
+      <div class="days-grid" id="daysGrid"></div>
+    </section>
+
+  </main>
+
+  <!-- Session Player Overlay -->
+  <div id="sessionPlayerOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.75);display:none;z-index:1000;">
+    <div style="max-width:1100px;margin:40px auto;background:#fff;border-radius:12px;overflow:hidden;">
+      <div style="padding:16px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <h3 id="spTitle" style="margin:0;font-size:22px;">Session</h3>
+          <p id="spSubtitle" style="margin:2px 0 0;color:#666;font-size:14px;">Exercise • Rest Timers</p>
+        </div>
+        <button id="spClose" class="btn outline">✕</button>
+      </div>
+      <div style="padding:16px;display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;">
+        <div style="flex:1 1 520px;min-width:300px;">
+          <video id="sessionVideo" style="width:100%;height:auto;border-radius:12px;background:#111;box-shadow:0 10px 30px rgba(0,0,0,0.25);" playsinline muted></video>
+          <div id="spExerciseName" style="margin-top:8px;font-weight:600;">Exercise</div>
+        </div>
+        <div style="flex:1 1 280px;min-width:240px;">
+          <div style="display:flex;gap:16px;margin-bottom:8px;">
+            <div style="flex:1;background:#f7f7ff;border:1px solid #e6e6ff;border-radius:8px;padding:12px;text-align:center;">
+              <div style="font-size:12px;color:#666;">State</div>
+              <div id="spState" style="font-size:18px;font-weight:700;color:#4c1d95;">IDLE</div>
+            </div>
+            <div style="flex:1;background:#f7f7ff;border:1px solid #e6e6ff;border-radius:8px;padding:12px;text-align:center;">
+              <div style="font-size:12px;color:#666;">Remaining</div>
+              <div id="spRemaining" style="font-size:18px;font-weight:700;color:#4c1d95;">00:00</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button id="spSound" class="btn outline">Sound: On</button>
+            <button id="spVideoSound" class="btn outline">Video Sound: Off</button>
+            <button id="spPauseResume" class="btn primary">Pause</button>
+            <button id="spSkip" class="btn outline">Skip Exercise</button>
+            <button id="spExtendRest" class="btn outline">Extend Rest (+30s)</button>
+            <button id="spStop" class="btn danger">Stop Session</button>
+          </div>
+          <div style="margin-top:12px;font-size:12px;color:#666;">Tips: Press S to skip; R to extend rest.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="spToast" style="position:fixed;left:50%;transform:translateX(-50%);bottom:80px;z-index:1100;background:rgba(17,17,17,0.9);color:#fff;padding:10px 14px;border-radius:8px;display:none;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,0.25);">
+    Toast
+  </div>
+
+  <!-- Resume Last Session Button -->
+  <button id="resumeLastSessionBtn" class="btn primary" style="position:fixed;bottom:20px;right:20px;display:none;z-index:900;">
+    Resume Session
+  </button>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+
+      <div class="modal-header">
+        <div>
+          <h3 id="modalTitle">Day 1</h3>
+          <p id="modalSubtitle">2 Sessions • Elder-Friendly Plan</p>
+        </div>
+        <button class="icon-btn" id="closeModal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="session-list" id="sessionList"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn outline" id="markDoneBtn">Mark Completed</button>
+        <button class="btn primary" id="startFirstBtn">Start Session 1</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/exercise-master.js"></script>
+  <script>
+    // Quick-start video mapping: all exercises point to a public sample video.
+    // Replace these URLs with your actual exercise videos when available.
+    window.EXERCISE_VIDEO_MAP = {
+      band_external_rotation: 'video/band external rotation.mp4',
+      cross_chest_arms_swing: 'video/crss chest arms swing.mp4',
+      grapevine: '  video/Grapevine.mp4',
+      high_knee_marching: 'video/High-Knee Marching.mp4',
+      inclined_pushups: 'video/inclined pushups.mp4',
+      mini_squats: 'video/mini squats.mp4',
+      obstacle_walk: 'video/obstacle walk.mp4',
+      seated_marching: 'video/seated marching.mp4',
+      single_leg_stand: 'video/single leg stand.mp4',
+      sit_to_stand: 'video/sit to stand.mp4',
+      standing_trunk_rotation: 'video/standing trunk rotation.mp4',
+      wall_ball_dribbling: 'video/wall ball dribbling.mp4'
+    };
+  </script>
+  <script src="js/effectiveness.js"></script>
+  <script src="js/report-storage.js"></script>
+  <script src="js/exercise-engine.js"></script>
+  <script src="js/exercise.js"></script>
+</body>
+</html>

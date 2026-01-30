@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ParCure | My Health Report</title>
+  <link rel="stylesheet" href="css/sections/report.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">ParCure</div>
+      <div class="subtitle">My Health • Reports & Progress</div>
+    </div>
+
+    <div class="right">
+      <button class="btn outline" id="backBtn">← Dashboard</button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section class="hero">
+      <div class="hero-text">
+        <h1>My Health Report</h1>
+        <p>Track your progress and get smart suggestions to improve your recovery.</p>
+      </div>
+
+      <div class="hero-card">
+        <div class="stat">
+          <div class="stat-title">Exercise Completion</div>
+          <div class="stat-value" id="completionText">0%</div>
+        </div>
+
+        <div class="progressbar">
+          <div class="progressfill" id="progressFill"></div>
+        </div>
+
+        <div class="small-note" id="reportSummary">
+          No exercise data found. Start from Move Well.
+        </div>
+      </div>
+    </section>
+
+    <section class="cards-grid">
+
+      <div class="info-card">
+        <div class="card-title">Days Completed</div>
+        <div class="card-value" id="daysCompleted">0</div>
+        <div class="card-sub">Out of 30 days</div>
+      </div>
+
+      <div class="info-card">
+        <div class="card-title">Current Streak</div>
+        <div class="card-value" id="currentStreak">0</div>
+        <div class="card-sub">Continuous days</div>
+      </div>
+
+      <div class="info-card">
+        <div class="card-title">Best Streak</div>
+        <div class="card-value" id="bestStreak">0</div>
+        <div class="card-sub">Your record</div>
+      </div>
+
+      <div class="info-card">
+        <div class="card-title">Last Completed Day</div>
+        <div class="card-value" id="lastDay">—</div>
+        <div class="card-sub">Most recent progress</div>
+      </div>
+
+    </section>
+
+    <section class="chart-section">
+      <div class="section-head">
+        <h2>Weekly Exercise Graph</h2>
+        <p>Shows how many days you completed per week.</p>
+      </div>
+
+      <div class="chart-card">
+        <canvas id="exerciseChart" width="900" height="260"></canvas>
+      </div>
+    </section>
+
+    <section class="suggestions">
+      <div class="section-head">
+        <h2>Smart Suggestions</h2>
+        <p>Based on your exercise consistency and recovery progress.</p>
+      </div>
+
+      <div class="suggestion-card" id="suggestionBox">
+        Start exercising to get personalized guidance.
+      </div>
+    </section>
+
+  </main>
+
+  <script src="js/report.js"></script>
+</body>
+</html>

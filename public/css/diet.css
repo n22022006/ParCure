@@ -1,0 +1,633 @@
+/* ===========================
+   DIET PLAN THEME
+   =========================== */
+
+:root {
+    --primary: #8b5cf6;
+    --primary-light: #c4b5fd;
+    --primary-dark: #6d28d9;
+    --secondary: #a78bfa;
+    --accent: #ddd6fe;
+    --bg-light: #ffffff;
+    --bg-lighter: #f5f3ff;
+    --text-dark: #1a1a1a;
+    --text-muted: #666666;
+    --border: #e9d5ff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    min-height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, var(--bg-lighter) 0%, var(--bg-light) 100%);
+    color: var(--text-dark);
+    overflow-y: auto;
+}
+
+/* ===========================
+   DIET CONTAINER
+   =========================== */
+.diet-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* ===========================
+   DIET HEADER
+   =========================== */
+.diet-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+    border-radius: 20px;
+    color: white;
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.2);
+}
+
+.diet-back-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.diet-back-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.diet-header h1 {
+    flex: 1;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.diet-toggle-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.toggle-btn {
+    padding: 10px 18px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.toggle-btn.active {
+    background: rgba(255, 255, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* ===========================
+   CONDITION INFO BOX
+   =========================== */
+.condition-info-box {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--bg-lighter) 100%);
+    padding: 20px 24px;
+    border-radius: 16px;
+    border-left: 5px solid var(--primary);
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.condition-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.condition-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    flex: 1;
+}
+
+.regenerate-btn {
+    padding: 10px 16px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.regenerate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(139, 92, 246, 0.3);
+}
+
+/* ===========================
+   VIEW CONTAINER
+   =========================== */
+.view-container {
+    display: none;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.view-container.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===========================
+   DAILY VIEW
+   =========================== */
+.date-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.date-nav-btn {
+    padding: 10px 16px;
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    font-weight: 700;
+    color: var(--primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.date-nav-btn:hover {
+    background: var(--bg-lighter);
+    border-color: var(--primary);
+}
+
+.current-date {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--primary-dark);
+    min-width: 150px;
+    text-align: center;
+}
+
+.daily-meals-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+/* ===========================
+   MEAL CARDS
+   =========================== */
+.meal-card {
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.08);
+    transition: all 0.3s ease;
+}
+
+.meal-card:hover {
+    border-color: var(--primary-light);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.15);
+    transform: translateY(-2px);
+}
+
+.meal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--accent);
+}
+
+.meal-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin: 0;
+}
+
+.meal-time {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.meal-content {
+    line-height: 1.8;
+    color: var(--text-dark);
+}
+
+.meal-content p {
+    margin: 8px 0;
+}
+
+.meal-content ul {
+    margin-left: 24px;
+    margin-top: 8px;
+}
+
+.meal-content li {
+    margin-bottom: 6px;
+}
+
+.loading-text {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* ===========================
+   NUTRITION SUMMARY
+   =========================== */
+.nutrition-summary {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(196, 181, 253, 0.1) 100%);
+    padding: 24px;
+    border-radius: 16px;
+    border: 2px solid var(--border);
+    margin-bottom: 30px;
+}
+
+.nutrition-summary h3 {
+    font-size: 1.3rem;
+    color: var(--primary-dark);
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.nutrition-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 16px;
+}
+
+.nutrition-item {
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid var(--border);
+}
+
+.nutrition-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.nutrition-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+/* ===========================
+   WEEKLY VIEW
+   =========================== */
+.weekly-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.day-card {
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.08);
+    transition: all 0.3s ease;
+}
+
+.day-card:hover {
+    border-color: var(--primary-light);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.15);
+    transform: translateY(-4px);
+}
+
+.day-card-header {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--primary-dark);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--accent);
+}
+
+.day-meals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.day-meal-item {
+    padding: 12px;
+    background: var(--bg-lighter);
+    border-radius: 10px;
+    border-left: 4px solid var(--primary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-dark);
+}
+
+.day-meal-item strong {
+    display: block;
+    color: var(--primary-dark);
+    margin-bottom: 4px;
+    font-weight: 700;
+}
+
+/* ===========================
+   LOADING SPINNER
+   =========================== */
+.diet-loading-spinner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.diet-loading-spinner.hidden {
+    display: none;
+}
+
+.diet-loading-spinner .spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(139, 92, 246, 0.2);
+    border-top: 4px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+.diet-loading-spinner p {
+    font-size: 1.1rem;
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+   =========================== */
+@media (max-width: 768px) {
+    .diet-container {
+        padding: 16px;
+    }
+
+    .diet-header {
+        flex-direction: column;
+        gap: 16px;
+        padding: 16px;
+    }
+
+    .diet-header h1 {
+        font-size: 1.4rem;
+    }
+
+    .diet-toggle-buttons {
+        width: 100%;
+    }
+
+    .toggle-btn {
+        flex: 1;
+    }
+
+    .condition-info-box {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .regenerate-btn {
+        width: 100%;
+    }
+
+    .weekly-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===========================
+   WEEKLY VIEW STYLES
+   =========================== */
+.weekly-meals-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.day-card {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(196, 181, 253, 0.05) 100%);
+    border: 2px solid var(--border);
+    border-radius: 18px;
+    padding: 24px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.08);
+    overflow: hidden;
+}
+
+.day-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 28px rgba(139, 92, 246, 0.15);
+    border-color: var(--primary-light);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(196, 181, 253, 0.1) 100%);
+}
+
+.day-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary), var(--secondary));
+}
+
+.day-card {
+    position: relative;
+}
+
+.day-name {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--primary-dark);
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--primary-light);
+    letter-spacing: 0.5px;
+}
+
+.day-meals {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--text-dark);
+}
+
+.day-meals p {
+    margin-bottom: 10px;
+}
+
+.day-meals strong {
+    color: var(--primary-dark);
+    font-weight: 700;
+}
+
+/* Weekly meal bullet points styling */
+.day-meals ul,
+.day-meals li {
+    list-style: none;
+    margin: 8px 0;
+}
+
+.day-meals li {
+    padding-left: 24px;
+    position: relative;
+    color: var(--text-muted);
+}
+
+.day-meals li:before {
+    content: '🥗';
+    position: absolute;
+    left: 0;
+    color: var(--primary);
+}
+
+/* Meal sections in weekly view */
+.day-meals br + strong {
+    display: block;
+    margin-top: 14px;
+    margin-bottom: 8px;
+    color: var(--primary-dark);
+    font-size: 1rem;
+}
+
+/* Grid adjustment for different screen sizes */
+@media (max-width: 900px) {
+    .weekly-meals-container {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+    }
+}
+
+    .nutrition-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+
+@media (max-width: 480px) {
+    .diet-container {
+        padding: 12px;
+    }
+
+    .diet-header {
+        gap: 12px;
+    }
+
+    .diet-header h1 {
+        font-size: 1.2rem;
+    }
+
+    .diet-back-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+
+    .meal-card {
+        padding: 16px;
+    }
+
+    .meal-name {
+        font-size: 1.1rem;
+    }
+
+    .condition-info-box {
+        padding: 16px;
+    }
+
+    .nutrition-summary {
+        padding: 16px;
+    }
+
+    .nutrition-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .nutrition-item {
+        padding: 12px;
+    }
+}

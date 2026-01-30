@@ -1,0 +1,405 @@
+# ParCure - Medical Web Application
+
+A modern, production-ready physiotherapy and patient management platform built with vanilla JavaScript and Firebase.
+
+## 🎨 Features
+
+### 1. **Animated Splash Screen**
+- Deep violet/purple gradient background
+- Glowing "ParCure" logo with animated glow effect
+- 4 glowing tree silhouettes with soft neon glow
+- Snowfall particle animation with horizontal drift
+- 8-second display before transition to login
+
+### 2. **Authentication**
+- Email/Password registration and login
+- Google Sign-In integration
+- Firebase Authentication
+- Secure session management
+
+### 3. **Multi-Page Patient Onboarding**
+- **Page 1**: Personal Details (name, age, gender, phone, email)
+- **Page 2**: Medical Condition (condition, diagnosis date, medications, doctor)
+- **Page 3**: Lifestyle Information (smoking, alcohol, activity level, diet)
+- **Page 4**: Mobility Assessment (pain level, affected area, movement difficulty)
+- **Page 5**: Medical File Uploads (X-ray, MRI, Prescription)
+- Progress indicator with smooth navigation
+
+### 4. **Firebase Integration**
+- **Firestore Database**: Patient data persistence
+- **Firebase Storage**: Medical file uploads
+- **Cloud Authentication**: Secure user management
+
+### 5. **Patient Dashboard**
+- Display all collected patient information
+- Access uploaded medical documents
+- Organized card-based layout
+- Responsive design for mobile devices
+
+### 6. **Personalized Diet Plan (AI-Powered)**
+- **Gemini AI Integration**: Generates custom diet plans based on user's medical condition
+- **Daily View**: Detailed meal plans for Breakfast, Lunch, Dinner, Snacks, and Hydration
+- **Nutrition Tracking**: Daily calorie and macronutrient summaries
+- **Weekly Overview**: See 7-day meal plans at a glance
+- **Dynamic Date Navigation**: Browse past and future meal plans
+- **Plan Regeneration**: Re-generate plans anytime for fresh suggestions
+- Responsive design for all devices
+
+### 7. **Violet Theme UI**
+- Modern gradient interface
+- Smooth animations and transitions
+- Responsive mobile-first design
+- Accessibility-focused components
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Modern web browser (Chrome, Firefox, Safari, Edge)
+- Firebase project account
+- Node.js (optional, for local development)
+
+### 1. Clone or Download ParCure
+
+```bash
+cd ParCure
+```
+
+### 2. Setup Firebase
+
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Create a new project or use an existing one
+3. Get your Firebase config from Project Settings
+4. Update `js/config.js` with your credentials:
+
+```javascript
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "your-project.firebaseapp.com",
+    projectId: "your-project-id",
+    storageBucket: "your-project.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+```
+
+### 2B. Setup Gemini API (for Diet Plans)
+
+1. Go to [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Click "Get API Key" or create a new one
+3. Copy your API key
+4. Update `js/config.js` with your Gemini API key:
+
+```javascript
+// Gemini API Configuration
+window.GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE";
+```
+
+**Note**: Get your Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey) - it's free to use with quota limits.
+
+### 3. Enable Firebase Services
+
+In Firebase Console:
+
+1. **Authentication**
+   - Enable Email/Password
+   - Enable Google Sign-In
+   - Add authorized domains
+
+2. **Firestore Database**
+   - Create a Firestore database in test mode (or production with proper rules)
+   - Collection: `patients`
+
+3. **Storage**
+   - Enable Cloud Storage
+   - Update security rules to allow authenticated uploads
+
+### 4. Update Firestore Security Rules
+
+Replace Firestore rules with:
+
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /patients/{uid} {
+      allow read, write: if request.auth.uid == uid;
+    }
+  }
+}
+```
+
+### 5. Update Storage Security Rules
+
+Replace Storage rules with:
+
+```javascript
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /patients/{uid}/{allPaths=**} {
+      allow read, write: if request.auth.uid == uid;
+    }
+  }
+}
+```
+
+### 6. Run the Application
+
+Open `index.html` in your web browser or use a local server:
+
+```bash
+# Using Python 3
+python -m http.server 8000
+
+# Using Node.js http-server
+npx http-server
+
+# Using VS Code Live Server extension
+# Right-click index.html → Open with Live Server
+```
+
+Visit `http://localhost:8000` (or your configured port)
+
+## 📁 Project Structure
+
+```
+ParCure/
+├── index.html              # Main HTML file
+├── dashboard.html          # Dashboard page
+├── diet.html               # Personalized diet plan page
+├── exercise.html           # Exercise page (placeholder)
+├── report.html             # Health reports page (placeholder)
+├── saathi.html             # AI health companion chat interface
+├── css/
+│   ├── styles.css          # Violet theme styling and animations
+│   ├── diet.css            # Diet plan page styling
+│   ├── saathi.css          # Chat interface styling
+│   └── sections/           # Modular CSS sections
+│       ├── splash.css      # Splash screen
+│       ├── global.css      # Global styles
+│       ├── greeting.css    # Dashboard greeting
+│       ├── action-blocks.css   # Dashboard action blocks
+│       ├── exercise.css    # Exercise page
+│       └── report.css      # Report page
+├── js/
+│   ├── config.js           # Firebase & Gemini API configuration
+│   ├── auth.js             # Authentication and login/signup
+│   ├── onboarding.js       # Multi-page onboarding form
+│   ├── dashboard.js        # Patient dashboard
+│   ├── diet.js             # Diet plan generation & management
+│   ├── saathi.js           # AI chatbot logic
+│   ├── app.js              # Main app initialization
+│   ├── exercise.js         # Exercise page logic
+│   └── report.js           # Reports page logic
+├── images/                 # Image assets
+└── README.md               # This file
+```
+
+## 🔄 User Flow
+
+1. **Splash Screen** (8 seconds)
+   - Animated logo and particles
+   - Automatic transition
+
+2. **Login/Signup** 
+   - Email/Password or Google Sign-In
+   - New users can create account
+
+3. **Patient Onboarding** (5 pages)
+   - Collect patient information
+   - Upload medical documents
+   - Save to Firebase
+
+4. **Dashboard**
+   - View patient profile
+   - Access action blocks: Exercise, Diet, Saathi, Reports
+   - Personalized greeting with patient name
+
+5. **Diet Plan Feature**
+   - View personalized meal plans based on medical condition
+   - Daily view: See detailed meal plans for each meal
+   - Weekly view: Overview of 7-day meal plans
+   - Regenerate plans anytime for fresh suggestions
+   - Nutrition summary with daily macronutrient tracking
+
+6. **Health Companion (Saathi)**
+   - Chat with AI health guide
+   - Get health tips and advice
+
+7. **Dashboard**
+   - View patient profile
+   - Logout option
+
+## 📦 Firebase Database Structure
+
+```javascript
+patients/{uid} {
+  personal: {
+    fullName,
+    age,
+    gender,
+    phone,
+    email
+  },
+  medical: {
+    condition,
+    diagnosisDate,
+    medications,
+    doctorName
+  },
+  lifestyle: {
+    smoking,
+    alcohol,
+    activityLevel,
+    dietType
+  },
+  mobility: {
+    painLevel,
+    affectedArea,
+    movementDifficulty
+  },
+  uploads: {
+    xrayURL,
+    xrayName,
+    mriURL,
+    mriName,
+    prescriptionURL,
+    prescriptionName,
+    uploadedAt
+  },
+  createdAt,
+  lastUpdated
+}
+```
+
+## 🎨 Color Palette
+
+- **Primary**: `#7c3aed` (Violet)
+- **Light Accent**: `#a78bfa` (Light Purple)
+- **Dark**: `#0f172a` (Dark Blue)
+- **Secondary**: `#ec4899` (Pink)
+- **Success**: `#10b981` (Green)
+- **Error**: `#ef4444` (Red)
+
+## 📱 Browser Support
+
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
+
+## 🔐 Security Considerations
+
+1. **Firebase Rules**: Always use proper Firestore and Storage security rules
+2. **CORS**: Configure CORS if accessing from different domains
+3. **SSL/TLS**: Use HTTPS in production
+4. **API Keys**: Keep Firebase config keys protected in production
+5. **Data Encryption**: Enable encryption for sensitive medical data
+6. **Gemini API Key**: Never expose your API key in client-side code for production - use backend endpoints instead
+
+## 🤖 AI Diet Plan Generation (Gemini Integration)
+
+The diet feature uses Google's Gemini AI to generate personalized meal plans:
+
+### How It Works:
+1. User's medical condition is fetched from Firestore
+2. Gemini API generates meal plans tailored to the condition
+3. Plans include breakfast, lunch, dinner, snacks, and hydration recommendations
+4. Nutrition information (calories, protein, carbs, fats) is extracted from AI response
+5. Users can regenerate plans anytime for fresh suggestions
+
+### Supported Conditions:
+- Diabetes
+- Hypertension
+- Heart Disease
+- Arthritis
+- Obesity Management
+- Thyroid Disorders
+- And any other medical condition
+
+### Example API Integration:
+```javascript
+// Diet plan generation with Gemini
+const prompt = `As a certified nutritionist, create a detailed breakfast meal plan 
+for a patient with the medical condition: "Diabetes Management".
+Please provide: recommended foods, ingredients, preparation, nutritional benefits, 
+nutritional info (calories, protein, carbs, fats), and health tips.`;
+
+const response = await fetch(
+    'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + apiKey,
+    {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.7, maxOutputTokens: 1024 }
+        })
+    }
+);
+```
+
+## ⚙️ Customization
+
+### Change Theme Colors
+Edit CSS variables in `css/styles.css`:
+```css
+:root {
+    --primary: #7c3aed;
+    --secondary: #ec4899;
+    /* ... more colors ... */
+}
+```
+
+### Modify Onboarding Fields
+Edit form sections in `index.html` under the onboarding container and add corresponding save logic in `js/onboarding.js`
+
+### Add More Firebase Features
+Integrate additional services:
+- Cloud Functions for backend logic
+- Firestore Realtime Updates
+- Cloud Messaging for notifications
+- Analytics
+
+## 📚 Documentation
+
+- [Firebase Documentation](https://firebase.google.com/docs)
+- [Firestore Guide](https://firebase.google.com/docs/firestore)
+- [Firebase Auth](https://firebase.google.com/docs/auth)
+- [Cloud Storage](https://firebase.google.com/docs/storage)
+
+## 🐛 Troubleshooting
+
+### Firebase not initializing
+- Verify config.js has correct Firebase credentials
+- Check browser console for errors (F12)
+- Ensure Firebase SDK URLs are accessible
+
+### Files not uploading
+- Check Firestore Storage security rules
+- Verify file size limits
+- Check browser console for upload errors
+
+### Google Sign-In not working
+- Ensure Google Sign-In is enabled in Firebase Console
+- Add authorized redirect URIs
+- Check for CORS issues
+
+### Onboarding form not submitting
+- Validate all required fields are filled
+- Check browser console for validation errors
+- Verify Firebase connection
+
+## 📄 License
+
+This project is provided as-is for medical/healthcare applications.
+
+## 🤝 Support
+
+For issues or questions, refer to Firebase documentation or contact your development team.
+
+---
+
+**ParCure** - Managing Health, One Patient at a Time
+#   P a r C u r e 
+ 
+ 

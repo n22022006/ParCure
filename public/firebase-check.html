@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase SDK Check</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .status {
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+        .status.ok {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .status.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .status.loading {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 10px 5px 10px 0;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        .console-output {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 Firebase SDK Loading Check</h1>
+        
+        <div id="status1" class="status loading">⏳ Checking Firebase SDK...</div>
+        <div id="status2" class="status loading">⏳ Checking firebase namespace...</div>
+        <div id="status3" class="status loading">⏳ Checking window.auth...</div>
+        <div id="status4" class="status loading">⏳ Checking window.db...</div>
+        <div id="status5" class="status loading">⏳ Testing Firebase initialization...</div>
+        
+        <div style="margin-top: 20px;">
+            <button onclick="reloadCheck()">Reload Check</button>
+            <button onclick="testConnection()">Test CDN Connection</button>
+            <button onclick="clearConsole()">Clear Console</button>
+        </div>
+        
+        <div id="console" class="console-output">Checking Firebase SDK status...</div>
+    </div>
+
+    <script>
+        const log = (msg) => {
+            const console_el = document.getElementById('console');
+            console_el.textContent += msg + '\n';
+            console_el.scrollTop = console_el.scrollHeight;
+        };
+
+        const clearConsole = () => {
+            document.getElementById('console').textContent = '';
+        };
+
+        const updateStatus = (id, ok, message) => {
+            const el = document.getElementById(id);
+            el.className = 'status ' + (ok ? 'ok' : 'error');
+            el.textContent = (ok ? '✅' : '❌') + ' ' + message;
+        };
+
+        // Check 1: Firebase SDK
+        log('[1] Checking Firebase SDK...');
+        if (typeof firebase !== 'undefined') {
+            log('✅ Firebase SDK loaded');
+            updateStatus('status1', true, 'Firebase SDK: LOADED');
+        } else {
+            log('❌ Firebase SDK NOT found');
+            updateStatus('status1', false, 'Firebase SDK: NOT LOADED');
+        }
+
+        // Check 2: firebase namespace
+        setTimeout(() => {
+            log('[2] Checking firebase namespace...');
+            if (typeof firebase === 'undefined') {
+                log('❌ firebase is undefined');
+                updateStatus('status2', false, 'firebase namespace: UNDEFINED');
+            } else {
+                log('✅ firebase namespace exists');
+                log('   firebase.app:', typeof firebase.app);
+                log('   firebase.auth:', typeof firebase.auth);
+                log('   firebase.firestore:', typeof firebase.firestore);
+                updateStatus('status2', true, 'firebase namespace: AVAILABLE');
+            }
+        }, 500);
+
+        // Check 3: window.auth
+        setTimeout(() => {
+            log('[3] Checking window.auth...');
+            if (typeof window.auth === 'undefined') {
+                log('❌ window.auth is undefined');
+                log('   This means config.js has not initialized Firebase yet');
+                updateStatus('status3', false, 'window.auth: UNDEFINED');
+            } else {
+                log('✅ window.auth is available');
+                log('   Type:', typeof window.auth);
+                updateStatus('status3', true, 'window.auth: AVAILABLE');
+            }
+        }, 1000);
+
+        // Check 4: window.db
+        setTimeout(() => {
+            log('[4] Checking window.db...');
+            if (typeof window.db === 'undefined') {
+                log('❌ window.db is undefined');
+                updateStatus('status4', false, 'window.db: UNDEFINED');
+            } else {
+                log('✅ window.db is available');
+                log('   Type:', typeof window.db);
+                updateStatus('status4', true, 'window.db: AVAILABLE');
+            }
+        }, 1000);
+
+        // Check 5: Full initialization test
+        setTimeout(() => {
+            log('[5] Testing Firebase initialization...');
+            if (typeof firebase === 'undefined') {
+                log('❌ Cannot test: Firebase SDK not loaded');
+                updateStatus('status5', false, 'Firebase initialization: FAILED (SDK not loaded)');
+            } else if (typeof window.auth === 'undefined' || typeof window.db === 'undefined') {
+                log('❌ Firebase SDK loaded but config.js did not initialize services');
+                updateStatus('status5', false, 'Firebase initialization: FAILED');
+            } else {
+                log('✅ Firebase fully initialized');
+                log('   window.auth available: yes');
+                log('   window.db available: yes');
+                updateStatus('status5', true, 'Firebase initialization: SUCCESS');
+            }
+        }, 1500);
+
+        // Test CDN connection
+        const testConnection = () => {
+            log('\n[CDN Test] Testing Firebase CDN connection...');
+            fetch('https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js', { mode: 'cors' })
+                .then(response => {
+                    log('✅ Firebase CDN is reachable');
+                    log('   Status: ' + response.status);
+                })
+                .catch(error => {
+                    log('❌ Firebase CDN is BLOCKED or unreachable');
+                    log('   Error: ' + error.message);
+                    log('\nPossible causes:');
+                    log('   1. Network firewall blocking gstatic.com');
+                    log('   2. Corporate proxy blocking CDN');
+                    log('   3. ISP blocking Google domains');
+                    log('   4. Local firewall/antivirus blocking connections');
+                });
+        };
+
+        const reloadCheck = () => {
+            location.reload();
+        };
+
+        // Auto-test CDN after 2 seconds
+        setTimeout(testConnection, 2000);
+    </script>
+
+    <!-- Load Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js"></script>
+    <script src="js/config.js"></script>
+
+    <script>
+        // Final check after everything loads
+        setTimeout(() => {
+            log('\n[Final Check] All scripts should be loaded now');
+            log('window.auth:', typeof window.auth);
+            log('window.db:', typeof window.db);
+            log('window.storage:', typeof window.storage);
+            log('window.provider:', typeof window.provider);
+        }, 2000);
+    </script>
+</body>
+</html>
